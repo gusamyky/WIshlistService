@@ -9,13 +9,21 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!--JavaFX-->
+        <!-- JavaFX-->
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx</artifactId>
             <version>21</version>
             <type>pom</type>
+        </dependency>
+
+        <!-- Lombok -->
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
         </dependency>
     </dependencies>
 
