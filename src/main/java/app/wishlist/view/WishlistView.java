@@ -1,4 +1,4 @@
-package org.gusamyky.view;
+package app.wishlist.view;
 
 public class WishlistView {
 }

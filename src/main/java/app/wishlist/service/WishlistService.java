@@ -1,4 +1,4 @@
-package org.gusamyky.service;
+package app.wishlist.service;
 
 public class WishlistService {
 }
