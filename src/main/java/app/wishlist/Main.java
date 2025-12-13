@@ -1,28 +1,38 @@
 package app.wishlist;
 
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class Main extends Application {
 
     public static void main(String[] args) {
-        launch(args);
+        launch();
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        // 1. Create a root node (container)
-        StackPane root = new StackPane();
+    public void start(Stage stage) throws IOException {
+        // Apply AtlantaFX Theme (Modern Look)
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
-        // 2. Add something to it (optional, just so it's not empty)
-        root.getChildren().add(new Label("Hello JavaFX!"));
+        // Load the FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
 
-        // 3. Set up the stage
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.show();
+        // Create Scene
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+
+        // Show Stage
+        stage.setTitle("Wishlist Service");
+
+        // Set the min window size
+        stage.setMinWidth(640);
+        stage.setMinHeight(480);
+
+        stage.setScene(scene);
+        stage.show();
     }
 }
