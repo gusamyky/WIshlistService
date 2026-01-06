@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+           fx:controller="app.wishlist.controller.LoginController"
+           prefHeight="600.0" prefWidth="900.0">
+
+    <VBox alignment="CENTER" maxWidth="350" spacing="20"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
+
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+
+        <Label text="Wishlist Service" style="-fx-font-weight: bold;">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+
+        <Label text="Sign in to manage your gifts" textFill="gray"/>
+
+        <VBox spacing="5" alignment="CENTER_LEFT">
+            <Label text="Select User" style="-fx-font-weight: bold;"/>
+            <ComboBox fx:id="userCombo" prefWidth="300" promptText="Choose an account..."/>
+        </VBox>
+
+        <Button text="Sign In" onAction="#handleLogin" defaultButton="true"
+                prefWidth="300" styleClass="button-accent"/>
+    </VBox>
+
+</StackPane>

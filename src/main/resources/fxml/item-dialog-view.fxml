@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20"
+      style="-fx-padding: 20; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      fx:controller="app.wishlist.controller.ItemDialogController">
+
+    <Label text="Item Details" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" halignment="RIGHT"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="250"/>
+        </columnConstraints>
+
+        <Label text="Item Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="nameField" promptText="e.g. Gaming Mouse" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Price ($):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="priceField" promptText="0.00" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Image URL:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="imageUrlField" promptText="https://..." GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Description:" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+        <TextArea fx:id="descArea" prefRowCount="3" wrapText="true"
+                  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel" cancelButton="true"/>
+        <Button text="Save Item" onAction="#handleSave" defaultButton="true" styleClass="button-success"/>
+    </HBox>
+
+</VBox>
