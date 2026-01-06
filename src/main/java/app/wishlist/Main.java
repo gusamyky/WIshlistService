@@ -1,12 +1,9 @@
 package app.wishlist;
 
+import app.wishlist.view.ViewSwitcher;
 import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class Main extends Application {
 
@@ -15,24 +12,15 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        // Apply AtlantaFX Theme (Modern Look)
+    public void start(Stage stage) {
+        // 1. Theme
         Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
 
-        // Load the FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
-
-        // Create Scene
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-
-        // Show Stage
+        // 2. Setup Switcher
+        ViewSwitcher.setStage(stage);
         stage.setTitle("Wishlist Service");
 
-        // Set the min window size
-        stage.setMinWidth(640);
-        stage.setMinHeight(480);
-
-        stage.setScene(scene);
-        stage.show();
+        // 3. Start at Login
+        ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
     }
 }
