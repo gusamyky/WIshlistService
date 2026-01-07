@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20"
+      style="-fx-padding: 30; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      fx:controller="app.wishlist.controller.AdminController">
+
+    <Label text="Secret Santa Admin Hub" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Label text="Configure the event and perform the draw." textFill="gray"/>
+
+    <Separator/>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="Event End Date:" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="datePicker"/>
+    </HBox>
+
+    <Label text="Select Participants" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="10" VBox.vgrow="ALWAYS">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Available Users"/>
+            <ListView fx:id="availableList" VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+        <VBox spacing="10" alignment="CENTER">
+            <Button text="&gt;" onAction="#handleAdd" prefWidth="40"/>
+            <Button text="&lt;" onAction="#handleRemove" prefWidth="40"/>
+        </VBox>
+
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Selected Group"/>
+            <ListView fx:id="selectedList" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </HBox>
+
+    <Separator/>
+
+    <Button text="🎲 DRAW PAIRS" onAction="#handleDraw"
+            styleClass="button-accent" maxWidth="Infinity" style="-fx-font-size: 16px; -fx-padding: 10;"/>
+
+</VBox>

@@ -40,15 +40,62 @@ public class MainLayoutController {
 
     @FXML
     private void navToFriends() {
-        // Placeholder for now
-        System.out.println("Navigating to Friends...");
-        // loadView("/fxml/friends-view.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/friends-view.fxml"));
+            Parent view = loader.load();
+
+            // Pass reference so FriendsController can call us back
+            FriendsController controller = loader.getController();
+            controller.setMainLayoutController(this);
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void navToFriendWishlist(User friend) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
+            Parent view = loader.load();
+
+            // Setup the controller for the Friend
+            WishlistController controller = loader.getController();
+            controller.setup(friend);
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void navToSecretSanta() {
-        // Placeholder
-        System.out.println("Navigating to Secret Santa...");
+        // Simple Admin Check (Hardcoded for prototype)
+        User currentUser = dataService.getLoggedInUser();
+        boolean isAdmin = currentUser != null && "jdoe".equals(currentUser.getLogin());
+
+        String fxml = isAdmin ? "/fxml/admin-view.fxml" : "/fxml/reveal-view.fxml";
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent view = loader.load();
+
+            // If it's the Reveal view, pass the controller reference so we can link to the wishlist
+            if (!isAdmin && loader.getController() instanceof RevealController) {
+                ((RevealController) loader.getController()).setMainLayoutController(this);
+            }
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -56,6 +103,7 @@ public class MainLayoutController {
         dataService.logout();
         ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
     }
+
 
     // --- Helper Method to Swap Views ---
 

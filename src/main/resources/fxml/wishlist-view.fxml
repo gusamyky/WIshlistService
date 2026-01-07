@@ -10,12 +10,14 @@
     <top>
         <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20;">
             <HBox alignment="CENTER_LEFT" spacing="20">
-                <Label text="My Wishlist" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label fx:id="pageTitle" text="My Wishlist" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
                 <Label fx:id="userLabel" text="Logged in as..." style="-fx-text-fill: gray;"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="+ Add New Item" onAction="#handleAddItem" styleClass="button-success"/>
+                <Button fx:id="addItemButton" text="+ Add New Item" onAction="#handleAddItem"
+                        styleClass="button-success"/>
             </HBox>
             <Separator/>
         </VBox>
