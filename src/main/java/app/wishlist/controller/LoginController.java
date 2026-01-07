@@ -4,42 +4,48 @@ import app.wishlist.model.User;
 import app.wishlist.service.DataService;
 import app.wishlist.view.ViewSwitcher;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.util.StringConverter;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
 public class LoginController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
-    private ComboBox<User> userCombo;
-
+    private TextField loginField;
     @FXML
-    public void initialize() {
-        // 1. Populate the ComboBox with users
-        userCombo.getItems().addAll(dataService.getAllUsers());
-
-        // 2. Make the ComboBox display Names instead of object hashes
-        userCombo.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(User user) {
-                return user != null ? user.getFullName() + " (" + user.getLogin() + ")" : "";
-            }
-
-            @Override
-            public User fromString(String string) {
-                return null; // Not needed for read-only selection
-            }
-        });
-    }
+    private PasswordField passwordField;
+    @FXML
+    private Label errorLabel;
 
     @FXML
     private void handleLogin() {
-        User selected = userCombo.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            dataService.setLoggedInUser(selected);
-            // Switch to Main Layout
-            ViewSwitcher.switchTo(ViewSwitcher.MAIN_LAYOUT);
+        String login = loginField.getText().trim();
+        String password = passwordField.getText();
+
+        if (login.isEmpty() || password.isEmpty()) {
+            showError("Please enter credentials");
+            return;
         }
+
+        // Authenticate via Service
+        boolean isAuthenticated = dataService.authenticate(login, password);
+
+        if (isAuthenticated) {
+            // Retrieve full user object to set context
+            User user = dataService.getUserByLogin(login);
+            dataService.setLoggedInUser(user);
+
+            // Navigate
+            ViewSwitcher.switchTo(ViewSwitcher.MAIN_LAYOUT);
+        } else {
+            showError("Invalid username or password");
+        }
+    }
+
+    private void showError(String msg) {
+        errorLabel.setText(msg);
+        errorLabel.setVisible(true);
     }
 
     @FXML

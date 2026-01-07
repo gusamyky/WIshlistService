@@ -2,8 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="app.wishlist.controller.LoginController"
@@ -24,10 +23,19 @@
 
         <Label text="Sign in to manage your gifts" textFill="gray"/>
 
-        <VBox spacing="5" alignment="CENTER_LEFT">
-            <Label text="Select User" style="-fx-font-weight: bold;"/>
-            <ComboBox fx:id="userCombo" prefWidth="300" promptText="Choose an account..."/>
+        <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="300">
+            <VBox spacing="5">
+                <Label text="Username" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="loginField" promptText="Enter username"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Password" style="-fx-font-weight: bold;"/>
+                <PasswordField fx:id="passwordField" promptText="Enter password"/>
+            </VBox>
         </VBox>
+
+        <Label fx:id="errorLabel" text="Invalid login or password" visible="false" style="-fx-text-fill: red;"/>
 
         <Button text="Sign In" onAction="#handleLogin" defaultButton="true"
                 prefWidth="300" styleClass="button-accent"/>
