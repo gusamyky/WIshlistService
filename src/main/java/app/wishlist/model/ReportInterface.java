@@ -1,4 +1,9 @@
 package app.wishlist.model;
 
-public class ReportInterface {
+public interface ReportInterface {
+    String getReportTitle();
+
+    String getReportContent();
+
+    String getAuthor();
 }

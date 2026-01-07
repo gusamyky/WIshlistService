@@ -99,6 +99,11 @@ public class MainLayoutController {
     }
 
     @FXML
+    private void navToFeedback() {
+        loadView("/fxml/feedback-view.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         dataService.logout();
         ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
