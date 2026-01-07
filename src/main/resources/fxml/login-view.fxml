@@ -31,6 +31,9 @@
 
         <Button text="Sign In" onAction="#handleLogin" defaultButton="true"
                 prefWidth="300" styleClass="button-accent"/>
+
+        <Button text="Create New Account" onAction="#handleGoToRegister"
+                prefWidth="300" style="-fx-background-color: transparent; -fx-text-fill: gray; -fx-font-size: 12px;"/>
     </VBox>
 
 </StackPane>

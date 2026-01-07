@@ -9,6 +9,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 
+import java.io.File;
+import java.io.FileWriter;
+
 public class FeedbackController {
 
     private final DataService dataService = DataService.getInstance();
@@ -21,7 +24,6 @@ public class FeedbackController {
 
     @FXML
     private void handleSubmit() {
-        // 1. Create the Report Object
         ReportInterface report = new SecretSantaSatisfactionQuestionnaire(
                 dataService.getLoggedInUser(),
                 (int) ratingSlider.getValue(),
@@ -29,21 +31,37 @@ public class FeedbackController {
                 againCheck.isSelected()
         );
 
-        // 2. "Process" the report (Print to console)
-        System.out.println("----- NEW REPORT SUBMITTED -----");
-        System.out.println("Title: " + report.getReportTitle());
-        System.out.println("Content:\n" + report.getReportContent());
-        System.out.println("--------------------------------");
+        saveReportToFile(report); // Call the new save method
 
-        // 3. Show Success
+        // Show Success
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Thank You");
         alert.setHeaderText("Feedback Received");
-        alert.setContentText("Thanks for your feedback! See you next year.");
+        alert.setContentText("Your feedback has been saved.");
         alert.showAndWait();
 
-        // Optional: Clear fields
         commentArea.clear();
         ratingSlider.setValue(5);
+    }
+
+    private void saveReportToFile(ReportInterface report) {
+        // 1. Ensure directory exists
+        File dir = new File("reports");
+        if (!dir.exists()) dir.mkdirs();
+
+        // 2. Create unique filename: report_jdoe_12345678.txt
+        String filename = "report_" + report.getAuthor() + "_" + System.currentTimeMillis() + ".txt";
+        File file = new File(dir, filename);
+
+        // 3. Write content
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("TITLE: " + report.getReportTitle() + "\n");
+            writer.write("--------------------------------\n");
+            writer.write(report.getReportContent());
+            System.out.println("Report saved to: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to save report.");
+        }
     }
 }
