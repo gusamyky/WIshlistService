@@ -32,6 +32,8 @@
 
                 <ToggleButton text="Secret Santa" toggleGroup="$navGroup"
                               maxWidth="Infinity" onAction="#navToSecretSanta" style="-fx-alignment: CENTER_LEFT;"/>
+                <ToggleButton text="Feedback" toggleGroup="$navGroup"
+                              maxWidth="Infinity" onAction="#navToFeedback" style="-fx-alignment: CENTER_LEFT;"/>
             </VBox>
 
             <Button text="Sign Out" onAction="#handleLogout" styleClass="button-danger" maxWidth="Infinity"/>
