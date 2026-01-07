@@ -38,4 +38,5 @@ build/
 .DS_Store
 
 ### Ignore wishlist db files ###
+/reports
 wishlist_data.json

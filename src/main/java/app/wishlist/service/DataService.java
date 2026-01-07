@@ -24,7 +24,7 @@ public class DataService {
 
     private DataService() {
         // Configure Gson to be readable (Pretty Printing)
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         loadData();
     }
 
@@ -35,6 +35,52 @@ public class DataService {
     // --- Auth ---
     public ObjectProperty<User> loggedInUserProperty() {
         return loggedInUser;
+    }
+
+    public boolean authenticate(String login, String inputPassword) {
+        // 1. Find user by login
+        User user = users.stream()
+                .filter(u -> u.getLogin().equalsIgnoreCase(login))
+                .findFirst()
+                .orElse(null);
+
+        if (user == null) return false;
+
+        // 2. Get the stored "Salt:Hash" string
+        String storedValue = user.getPassword();
+
+        // 3. Split it to recover the ORIGINAL Salt
+        String[] parts = storedValue.split(":");
+
+        // Safety check: ensure data isn't corrupted
+        if (parts.length != 2) {
+            System.err.println("Error: Stored password format is invalid for user " + login);
+            return false;
+        }
+
+        String storedSaltString = parts[0];
+        String storedHash = parts[1];
+
+        // 4. Decode the Salt back to bytes
+        byte[] originalSalt = Base64.getDecoder().decode(storedSaltString);
+
+        // 5. Hash the input password using the ORIGINAL Salt
+        String newHash = PasswordHashingService.hashPassword(inputPassword, originalSalt);
+
+        // Debugging print (Optional - remove after fixing)
+        System.out.println("Stored: " + storedHash);
+        System.out.println("Calc'd: " + newHash);
+
+        // 6. Compare
+        return newHash.equals(storedHash);
+    }
+
+    // Also, update helper to get user object by login if needed
+    public User getUserByLogin(String login) {
+        return users.stream()
+                .filter(u -> u.getLogin().equalsIgnoreCase(login))
+                .findFirst()
+                .orElse(null);
     }
 
     public User getLoggedInUser() {
@@ -54,21 +100,25 @@ public class DataService {
     }
 
     public boolean registerUser(String login, String password, String firstName, String lastName) {
-        // 1. Check if login exists
         boolean exists = users.stream().anyMatch(u -> u.getLogin().equalsIgnoreCase(login));
-        if (exists) {
-            return false; // Login taken
-        }
+        if (exists) return false;
 
-        // 2. Create and Add
-        User newUser = new User(login, password, firstName, lastName);
+        // 1. Generate new Salt
+        byte[] salt = PasswordHashingService.getSalt();
+
+        // 2. Hash password with that Salt
+        String hash = PasswordHashingService.hashPassword(password, salt);
+
+        // 3. Combine Salt + Hash (Format: "salt:hash")
+        String saltString = Base64.getEncoder().encodeToString(salt);
+        String storedPassword = saltString + ":" + hash;
+
+        // 4. Save User
+        User newUser = new User(login, storedPassword, firstName, lastName);
         users.add(newUser);
-
-        // 3. Create an empty wishlist for them immediately
         wishlists.put(login, new ArrayList<>());
-
-        // 4. Save to file
         saveData();
+
         return true;
     }
 
@@ -128,8 +178,6 @@ public class DataService {
     private void loadData() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
-            // If no file exists, create default/seed data for the first run
-            seedData();
             saveData();
             return;
         }
@@ -148,19 +196,6 @@ public class DataService {
         }
     }
 
-    private void seedData() {
-        System.out.println("Seeding initial data...");
-        // This only runs ONCE if the file doesn't exist
-        User john = new User("jdoe", "123", "John", "Doe");
-        User alice = new User("asmith", "123", "Alice", "Smith");
-        User bob = new User("bjones", "123", "Bob", "Jones");
-        users.addAll(List.of(john, alice, bob));
-
-        // Add sample items...
-        List<WishItem> johnsList = new ArrayList<>();
-        johnsList.add(WishItem.builder().id("1").name("Gaming Mouse").price(60.0).description("Logitech G502").isReserved(false).build());
-        wishlists.put("jdoe", johnsList);
-    }
 
     // A wrapper class to help JSON serialization
     private static class DataWrapper {
