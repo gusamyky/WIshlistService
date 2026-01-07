@@ -41,4 +41,9 @@ public class LoginController {
             ViewSwitcher.switchTo(ViewSwitcher.MAIN_LAYOUT);
         }
     }
+
+    @FXML
+    private void handleGoToRegister() {
+        ViewSwitcher.switchTo("/fxml/register-view.fxml");
+    }
 }

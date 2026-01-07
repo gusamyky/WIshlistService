@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER"
+      spacing="15"
+      style="-fx-padding: 40; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      fx:controller="app.wishlist.controller.RegisterController">
+
+    <Label text="Create Account" style="-fx-font-weight: bold; -fx-font-size: 24px;"/>
+    <Label text="Join the Secret Santa Event" textFill="gray"/>
+
+    <VBox spacing="5" maxWidth="300">
+        <Label text="Username"/>
+        <TextField fx:id="loginField" promptText="jdoe"/>
+    </VBox>
+
+    <VBox spacing="5" maxWidth="300">
+        <Label text="First Name"/>
+        <TextField fx:id="firstNameField" promptText="John"/>
+    </VBox>
+
+    <VBox spacing="5" maxWidth="300">
+        <Label text="Last Name"/>
+        <TextField fx:id="lastNameField" promptText="Doe"/>
+    </VBox>
+
+    <VBox spacing="5" maxWidth="300">
+        <Label text="Password"/>
+        <PasswordField fx:id="passField"/>
+    </VBox>
+
+    <Button text="Sign Up" onAction="#handleRegister" defaultButton="true"
+            prefWidth="300" styleClass="button-accent" style="-fx-font-size: 14px;"/>
+
+    <Button text="Back to Login" onAction="#handleBack"
+            prefWidth="300" style="-fx-background-color: transparent; -fx-text-fill: #0066cc; -fx-underline: true;"/>
+
+</VBox>
