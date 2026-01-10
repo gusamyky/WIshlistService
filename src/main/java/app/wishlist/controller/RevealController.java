@@ -6,6 +6,7 @@ import app.wishlist.service.SecretSantaService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import lombok.Setter;
 
 public class RevealController {
 
@@ -17,12 +18,9 @@ public class RevealController {
     private VBox resultBox;
     @FXML
     private Label targetNameLabel;
+    @Setter
     private MainLayoutController mainLayoutController;
     private User myTarget;
-
-    public void setMainLayoutController(MainLayoutController controller) {
-        this.mainLayoutController = controller;
-    }
 
     @FXML
     public void initialize() {

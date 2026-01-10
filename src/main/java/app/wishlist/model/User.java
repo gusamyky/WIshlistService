@@ -1,21 +1,39 @@
 package app.wishlist.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    private String login;
-    private String password; // In a real app, hash this!
-    private String firstName;
-    private String lastName;
+    protected String login;
+    protected String password; // Salt:Hash
+    protected String firstName;
+    protected String lastName;
+    protected String type = "USER"; // Discriminator for Polymorphism
+
+    // We will add friends here for Step 2
+    protected Set<String> friends = new HashSet<>();
+
+    public User(String login, String password, String firstName, String lastName) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.type = "USER";
+    }
 
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+
+    // Polymorphic method example
+    public boolean isAdmin() {
+        return false;
     }
 }
