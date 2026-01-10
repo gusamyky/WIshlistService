@@ -10,6 +10,11 @@
     <Label text="How was your Secret Santa experience?" textFill="gray"/>
 
     <VBox spacing="5">
+        <Label text="Select Event:" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="eventComboBox" promptText="Choose an event..." maxWidth="300"/>
+    </VBox>
+
+    <VBox spacing="5">
         <Label text="Rate your experience (1-5):" style="-fx-font-weight: bold;"/>
         <Slider fx:id="ratingSlider" min="1" max="5" majorTickUnit="1" minorTickCount="0"
                 showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5"/>

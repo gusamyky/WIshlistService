@@ -7,11 +7,11 @@ import app.wishlist.service.SecretSantaService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.util.Callback;
+
+import java.io.File;
+import java.nio.file.Files;
 
 public class AdminController {
 
@@ -113,5 +113,41 @@ public class AdminController {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setContentText(msg);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleViewReports() {
+        if (currentEvent == null) return;
+
+        File dir = new File("reports");
+        String filename = "event_" + currentEvent.getId() + "_report.txt";
+        File file = new File(dir, filename);
+
+        if (!file.exists()) {
+            showAlert("No feedback reports found for this event yet.");
+            return;
+        }
+
+        try {
+            // Read content
+            String content = Files.readString(file.toPath());
+
+            // Show in Dialog
+            TextArea textArea = new TextArea(content);
+            textArea.setEditable(false);
+            textArea.setWrapText(true);
+            textArea.setPrefSize(500, 400);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Event Feedback Report");
+            alert.setHeaderText("Feedback for: " + currentEvent.getName());
+            alert.getDialogPane().setContent(textArea);
+            alert.setResizable(true);
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error reading report file.");
+        }
     }
 }
