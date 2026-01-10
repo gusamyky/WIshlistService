@@ -77,7 +77,8 @@ public class MainLayoutController {
     private void navToSecretSanta() {
         // Simple Admin Check (Hardcoded for prototype)
         User currentUser = dataService.getLoggedInUser();
-        boolean isAdmin = currentUser != null && "jdoe".equals(currentUser.getLogin());
+        boolean isAdmin = currentUser.isAdmin();
+        System.out.println("Navigating to Secret Santa view. Is Admin: " + isAdmin);
 
         String fxml = isAdmin ? "/fxml/admin-view.fxml" : "/fxml/reveal-view.fxml";
 

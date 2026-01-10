@@ -2,52 +2,142 @@ package app.wishlist.controller;
 
 import app.wishlist.model.User;
 import app.wishlist.service.DataService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import lombok.Setter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FriendsController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
-    private ListView<User> friendsList;
-    private MainLayoutController mainLayoutController; // To navigate
-
-    // Setter to allow navigation back to the main layout logic
-    public void setMainLayoutController(MainLayoutController controller) {
-        this.mainLayoutController = controller;
-    }
+    private TextField searchField;
+    @FXML
+    private ListView<User> usersList;
+    @FXML
+    private Label listTitleLabel;
+    @Setter
+    private MainLayoutController mainLayoutController;
+    private ObservableList<User> displayedUsers = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        // 1. Load all users EXCEPT the current one
-        User currentUser = dataService.getLoggedInUser();
+        usersList.setItems(displayedUsers);
 
-        friendsList.getItems().addAll(
-                dataService.getAllUsers().stream()
-                        .filter(u -> !u.getLogin().equals(currentUser.getLogin())) // Filter out self
-                        .toList()
-        );
+        // Use an Anonymous Inner Class or simple Lambda for the cell factory
+        usersList.setCellFactory(param -> new UserListCell());
 
-        // 2. Custom Cell Factory (Display Name + Login)
-        friendsList.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (empty || user == null) {
-                    setText(null);
+        // Default: Show my existing friends
+        showMyFriends();
+
+        // Live search listener
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.isBlank()) {
+                showMyFriends();
+            } else {
+                handleSearch();
+            }
+        });
+    }
+
+    private void showMyFriends() {
+        listTitleLabel.setText("My Friends");
+        User me = dataService.getLoggedInUser();
+        if (me == null) return;
+
+        List<User> friends = dataService.getAllUsers().stream()
+                .filter(u -> dataService.isFriend(me, u.getLogin()))
+                .collect(Collectors.toList());
+
+        displayedUsers.setAll(friends);
+    }
+
+    @FXML
+    private void handleSearch() {
+        String query = searchField.getText().toLowerCase().trim();
+        if (query.isEmpty()) {
+            showMyFriends();
+            return;
+        }
+
+        listTitleLabel.setText("Search Results");
+        User me = dataService.getLoggedInUser();
+
+        // Filter users who match the query AND are not me
+        List<User> results = dataService.getAllUsers().stream()
+                .filter(u -> !u.getLogin().equals(me.getLogin())) // Not me
+                .filter(u -> u.getLogin().toLowerCase().contains(query) ||
+                        u.getFullName().toLowerCase().contains(query))
+                .collect(Collectors.toList());
+
+        displayedUsers.setAll(results);
+    }
+
+    // --- INNER CLASS FOR CUSTOM CELLS ---
+    private class UserListCell extends ListCell<User> {
+        @Override
+        protected void updateItem(User user, boolean empty) {
+            super.updateItem(user, empty);
+
+            if (empty || user == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                HBox container = new HBox(10);
+                container.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                // User Info
+                Label nameLabel = new Label(user.getFullName() + " (@" + user.getLogin() + ")");
+                nameLabel.setStyle("-fx-font-weight: bold;");
+
+                // Spacer
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                // Action Button
+                Button actionBtn = new Button();
+                User me = dataService.getLoggedInUser();
+                boolean isFriend = dataService.isFriend(me, user.getLogin());
+
+                if (isFriend) {
+                    actionBtn.setText("Remove");
+                    actionBtn.getStyleClass().add("button-danger");
+                    actionBtn.setStyle("-fx-background-color: #ffcccc; -fx-text-fill: red;");
+                    actionBtn.setOnAction(e -> {
+                        dataService.removeFriend(me, user.getLogin());
+                        // Refresh logic based on current view
+                        if (listTitleLabel.getText().equals("My Friends")) {
+                            getListView().getItems().remove(user);
+                        } else {
+                            updateItem(user, false); // Refresh just this cell
+                        }
+                    });
                 } else {
-                    setText(user.getFullName() + " (@" + user.getLogin() + ")");
+                    actionBtn.setText("Add Friend");
+                    actionBtn.getStyleClass().add("button-success");
+                    actionBtn.setOnAction(e -> {
+                        dataService.addFriend(me, user.getLogin());
+                        updateItem(user, false); // Refresh cell to show "Remove"
+                    });
                 }
-            }
-        });
 
-        // 3. Handle Click
-        friendsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selectedUser) -> {
-            if (selectedUser != null && mainLayoutController != null) {
-                // Navigate to that friend's wishlist
-                mainLayoutController.navToFriendWishlist(selectedUser);
+                // Allow clicking the row to view Wishlist (Polymorphism in action if we had different views)
+                container.setOnMouseClicked(e -> {
+                    if (mainLayoutController != null) {
+                        mainLayoutController.navToFriendWishlist(user);
+                    }
+                });
+
+                container.getChildren().addAll(nameLabel, spacer, actionBtn);
+                setGraphic(container);
             }
-        });
+        }
     }
 }

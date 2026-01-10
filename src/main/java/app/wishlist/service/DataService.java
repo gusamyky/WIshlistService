@@ -23,7 +23,6 @@ public class DataService {
 
     private DataService() {
         // --- REQUIREMENT: Inner Class / Anonymous Class ---
-        // We create a custom deserializer to handle User vs AdminUser
         JsonDeserializer<User> userDeserializer = new JsonDeserializer<User>() {
             @Override
             public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -31,9 +30,15 @@ public class DataService {
                 String type = jsonObject.has("type") ? jsonObject.get("type").getAsString() : "USER";
 
                 if ("ADMIN".equals(type)) {
+                    // This is safe because AdminUser.class is DIFFERENT from User.class
+                    // so it won't trigger this deserializer again.
                     return context.deserialize(jsonObject, AdminUser.class);
                 }
-                return context.deserialize(jsonObject, User.class);
+
+                // --- FIX IS HERE ---
+                // We cannot use context.deserialize(json, User.class) because it triggers THIS adapter again (Loop).
+                // Instead, we use a temporary default Gson instance to parse the concrete User class.
+                return new Gson().fromJson(jsonObject, User.class);
             }
         };
 
@@ -140,6 +145,27 @@ public class DataService {
         saveData();
 
         return true;
+    }
+
+    // --- Friends Logic ---
+
+    public void addFriend(User me, String friendLogin) {
+        if (me == null || friendLogin == null) return;
+        // Logic: Add friend ID to my list
+        me.getFriends().add(friendLogin);
+        saveData(); // Persist changes
+    }
+
+    public void removeFriend(User me, String friendLogin) {
+        if (me == null || friendLogin == null) return;
+        me.getFriends().remove(friendLogin);
+        saveData();
+    }
+
+    // Helper to check if someone is already a friend
+    public boolean isFriend(User me, String otherLogin) {
+        if (me == null) return false;
+        return me.getFriends().contains(otherLogin);
     }
 
     // --- Wishlist Logic ---

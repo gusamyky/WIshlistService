@@ -17,7 +17,6 @@ public class User {
     protected String lastName;
     protected String type = "USER"; // Discriminator for Polymorphism
 
-    // We will add friends here for Step 2
     protected Set<String> friends = new HashSet<>();
 
     public User(String login, String password, String firstName, String lastName) {
@@ -28,12 +27,17 @@ public class User {
         this.type = "USER";
     }
 
+    public Set<String> getFriends() {
+        if (friends == null) friends = new HashSet<>();
+        return friends;
+    }
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
     // Polymorphic method example
     public boolean isAdmin() {
-        return false;
+        return this.type.equals("ADMIN");
     }
 }
