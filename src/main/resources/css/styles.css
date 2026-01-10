@@ -1,0 +1,89 @@
+/* src/main/resources/css/styles.css */
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f4f4f4;
+}
+
+/* --- HEADERS --- */
+.header-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.sub-header {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+/* --- BUTTONS --- */
+.button {
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+/* Primary Action (Blue) */
+.button-accent {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.button-accent:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* Positive Action (Green) - e.g. Add, Save, Create */
+.button-success {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+}
+
+.button-success:hover {
+    -fx-background-color: #1e7e34;
+}
+
+/* Danger Action (Red) - e.g. Remove, Delete */
+.button-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+
+.button-danger:hover {
+    -fx-background-color: #bd2130;
+}
+
+/* Sidebar Navigation Buttons */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 20;
+    -fx-font-size: 15px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #e2e6ea;
+}
+
+.nav-button:selected {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* --- LIST VIEW --- */
+.list-cell {
+    -fx-padding: 10;
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.list-cell:selected {
+    -fx-background-color: #e8f0fe;
+    -fx-text-fill: black;
+}

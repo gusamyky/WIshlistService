@@ -44,10 +44,6 @@ public class EventsDashboardController {
         // Click Logic
         eventsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && mainLayoutController != null) {
-                // TODO: We need to navigate to the "Event Details/Admin" view for this specific event
-                // For now, let's just print to console
-                System.out.println("Selected event: " + newVal.getName());
-                // In next step, we will wire this to the Admin/Reveal view
                 mainLayoutController.navToEventDetails(newVal);
             }
         });

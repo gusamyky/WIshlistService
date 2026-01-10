@@ -19,6 +19,10 @@ public class MainLayoutController {
     @FXML
     private StackPane contentArea;
 
+    // Add a field to track current view
+    private String currentView = "";
+
+
     @FXML
     public void initialize() {
         // 1. Setup User Info
@@ -38,66 +42,46 @@ public class MainLayoutController {
         loadView("/fxml/wishlist-view.fxml");
     }
 
-    @FXML
-    private void navToFriends() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/friends-view.fxml"));
-            Parent view = loader.load();
-
-            // Pass reference so FriendsController can call us back
-            FriendsController controller = loader.getController();
-            controller.setMainLayoutController(this);
-
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(view);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void navToFriendWishlist(User friend) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
-            Parent view = loader.load();
-
-            // Setup the controller for the Friend
-            WishlistController controller = loader.getController();
-            controller.setup(friend);
-
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(view);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
+//            Parent view = loader.load();
+//
+//            // Setup the controller for the Friend
+//            WishlistController controller = loader.getController();
+//            controller.setup(friend);
+//
+//            contentArea.getChildren().clear();
+//            contentArea.getChildren().add(view);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        loadView("/fxml/wishlist-view.fxml");
     }
 
     @FXML
     private void navToSecretSanta() {
         // Now everyone goes to the Dashboard first
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/events-dashboard.fxml"));
-            Parent view = loader.load();
-
-            EventsDashboardController controller = loader.getController();
-            controller.setMainLayoutController(this);
-
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(view);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/events-dashboard.fxml"));
+//            Parent view = loader.load();
+//
+//            EventsDashboardController controller = loader.getController();
+//            controller.setMainLayoutController(this);
+//
+//            contentArea.getChildren().clear();
+//            contentArea.getChildren().add(view);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        loadView("/fxml/events-dashboard.fxml");
     }
+
 
     public void navToEventDetails(app.wishlist.model.SecretSantaEvent event) {
         User me = dataService.getLoggedInUser();
-
-        // Logic:
-        // If I am the SYSTEM Admin -> Admin View
-        // OR If I am the Event Owner -> Admin View
-        // Else -> Reveal View
 
         boolean canManage = me.isAdmin() || event.getOwnerLogin().equals(me.getLogin());
         String fxml = canManage ? "/fxml/admin-view.fxml" : "/fxml/reveal-view.fxml";
@@ -129,6 +113,11 @@ public class MainLayoutController {
     }
 
     @FXML
+    private void navToFriends() {
+        loadView("/fxml/friends-view.fxml");
+    }
+
+    @FXML
     private void handleLogout() {
         dataService.logout();
         ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
@@ -138,17 +127,31 @@ public class MainLayoutController {
     // --- Helper Method to Swap Views ---
 
     private void loadView(String fxmlPath) {
+        // REQUIREMENT: Prevent reloading if already active
+        if (currentView.equals(fxmlPath)) {
+            System.out.println("View already active: " + fxmlPath);
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
 
-            // Clear current content and add new view
+            // Inject dependencies if needed
+            Object controller = loader.getController();
+            if (controller instanceof FriendsController) {
+                ((FriendsController) controller).setMainLayoutController(this);
+            }
+            // ... add other injections here ...
+
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
+            // Update tracker
+            currentView = fxmlPath;
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Could not load sub-view: " + fxmlPath);
         }
     }
 }
