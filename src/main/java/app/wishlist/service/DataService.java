@@ -1,9 +1,9 @@
 package app.wishlist.service;
 
+import app.wishlist.model.AdminUser;
 import app.wishlist.model.User;
 import app.wishlist.model.WishItem;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,13 +18,31 @@ public class DataService {
     private static final String DATA_FILE = "wishlist_data.json";
     private final Gson gson;
     private final ObjectProperty<User> loggedInUser = new SimpleObjectProperty<>();
-    // Data Structures
     private List<User> users = new ArrayList<>();
     private Map<String, List<WishItem>> wishlists = new HashMap<>();
 
     private DataService() {
-        // Configure Gson to be readable (Pretty Printing)
-        this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+        // --- REQUIREMENT: Inner Class / Anonymous Class ---
+        // We create a custom deserializer to handle User vs AdminUser
+        JsonDeserializer<User> userDeserializer = new JsonDeserializer<User>() {
+            @Override
+            public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                JsonObject jsonObject = json.getAsJsonObject();
+                String type = jsonObject.has("type") ? jsonObject.get("type").getAsString() : "USER";
+
+                if ("ADMIN".equals(type)) {
+                    return context.deserialize(jsonObject, AdminUser.class);
+                }
+                return context.deserialize(jsonObject, User.class);
+            }
+        };
+
+        this.gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(User.class, userDeserializer) // Register the adapter
+                .create();
+
         loadData();
     }
 
@@ -99,7 +117,9 @@ public class DataService {
         return users;
     }
 
-    public boolean registerUser(String login, String password, String firstName, String lastName) {
+    // --- UPDATED REGISTRATION ---
+    // We need to allow registering an Admin (for testing) or regular user
+    public boolean registerUser(String login, String password, String firstName, String lastName, boolean isAdmin) {
         boolean exists = users.stream().anyMatch(u -> u.getLogin().equalsIgnoreCase(login));
         if (exists) return false;
 
@@ -169,7 +189,6 @@ public class DataService {
             wrapper.users = this.users;
             wrapper.wishlists = this.wishlists;
             gson.toJson(wrapper, writer);
-            System.out.println("Data saved to " + DATA_FILE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -178,6 +197,7 @@ public class DataService {
     private void loadData() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
+            seedData(); // You might want to seed a default Admin here
             saveData();
             return;
         }
@@ -186,7 +206,6 @@ public class DataService {
             Type type = new TypeToken<DataWrapper>() {
             }.getType();
             DataWrapper wrapper = gson.fromJson(reader, type);
-
             if (wrapper != null) {
                 this.users = wrapper.users != null ? wrapper.users : new ArrayList<>();
                 this.wishlists = wrapper.wishlists != null ? wrapper.wishlists : new HashMap<>();
@@ -196,8 +215,11 @@ public class DataService {
         }
     }
 
+    private void seedData() {
+        // Create a default Admin
+        registerUser("admin", "admin", "System", "Admin", true);
+    }
 
-    // A wrapper class to help JSON serialization
     private static class DataWrapper {
         List<User> users;
         Map<String, List<WishItem>> wishlists;

@@ -21,7 +21,6 @@ public class RegisterController {
 
     @FXML
     private void handleRegister() {
-        // Basic Validation
         if (loginField.getText().isBlank() || firstNameField.getText().isBlank()) {
             showAlert("Error", "Please fill in all fields.");
             return;
@@ -31,7 +30,8 @@ public class RegisterController {
                 loginField.getText().trim(),
                 passField.getText(),
                 firstNameField.getText().trim(),
-                lastNameField.getText().trim()
+                lastNameField.getText().trim(),
+                false
         );
 
         if (success) {
