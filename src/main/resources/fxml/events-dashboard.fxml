@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="15"
+      style="-fx-padding: 30; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      fx:controller="app.wishlist.controller.EventsDashboardController">
+
+    <Label text="My Secret Santa Events" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <VBox spacing="10" style="-fx-background-color: #f4f4f4; -fx-padding: 15; -fx-background-radius: 5;">
+        <Label text="Create New Event" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10">
+            <TextField fx:id="eventNameField" promptText="Event Name (e.g. Office Party)" HBox.hgrow="ALWAYS"/>
+            <DatePicker fx:id="eventDatePicker" promptText="Date"/>
+            <Button text="Create" onAction="#handleCreate" styleClass="button-success"/>
+        </HBox>
+    </VBox>
+
+    <Separator/>
+
+    <Label text="Select an event to view details:" textFill="gray"/>
+    <ListView fx:id="eventsList" VBox.vgrow="ALWAYS"/>
+
+</VBox>

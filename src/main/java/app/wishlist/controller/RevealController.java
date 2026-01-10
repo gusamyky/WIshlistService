@@ -1,12 +1,12 @@
 package app.wishlist.controller;
 
+import app.wishlist.model.SecretSantaEvent;
 import app.wishlist.model.User;
 import app.wishlist.service.DataService;
 import app.wishlist.service.SecretSantaService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import lombok.Setter;
 
 public class RevealController {
 
@@ -18,30 +18,43 @@ public class RevealController {
     private VBox resultBox;
     @FXML
     private Label targetNameLabel;
-    @Setter
     private MainLayoutController mainLayoutController;
+    private SecretSantaEvent currentEvent; // <--- NEW: The specific event
     private User myTarget;
 
-    @FXML
-    public void initialize() {
+    public void setMainLayoutController(MainLayoutController controller) {
+        this.mainLayoutController = controller;
+    }
+
+    // New Method: Called immediately after loading the view
+    public void setEvent(SecretSantaEvent event) {
+        this.currentEvent = event;
+        loadData();
+    }
+
+    private void loadData() {
+        if (currentEvent == null) return;
+
         User me = dataService.getLoggedInUser();
 
-        // 1. Check if Draw is Done
-        if (!santaService.isDrawDone()) {
+        // 1. Check if Draw is Done (Check the EVENT object, not the service)
+        if (!currentEvent.isDrawDone()) {
             showWaiting();
             return;
         }
 
-        // 2. Find who I am buying for
-        myTarget = santaService.getRecipientFor(me);
+        // 2. Find who I am buying for (Pass the EVENT to the service)
+        myTarget = santaService.getRecipientFor(currentEvent, me);
 
         if (myTarget != null) {
             showResult(myTarget);
         } else {
-            // I might not be in the participation list
             waitingBox.setVisible(true);
             resultBox.setVisible(false);
-            ((Label) waitingBox.getChildren().get(1)).setText("You are not participating in this draw.");
+            // Safety check in case they were removed or logic failed
+            if (waitingBox.getChildren().size() > 1 && waitingBox.getChildren().get(1) instanceof Label) {
+                ((Label) waitingBox.getChildren().get(1)).setText("You are not participating in this draw.");
+            }
         }
     }
 
