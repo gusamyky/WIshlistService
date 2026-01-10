@@ -40,3 +40,4 @@ build/
 ### Ignore wishlist db files ###
 /reports
 wishlist_data.json
+events_data.json

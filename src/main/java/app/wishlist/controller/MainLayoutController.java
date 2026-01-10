@@ -75,20 +75,44 @@ public class MainLayoutController {
 
     @FXML
     private void navToSecretSanta() {
-        // Simple Admin Check (Hardcoded for prototype)
-        User currentUser = dataService.getLoggedInUser();
-        boolean isAdmin = currentUser.isAdmin();
-        System.out.println("Navigating to Secret Santa view. Is Admin: " + isAdmin);
+        // Now everyone goes to the Dashboard first
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/events-dashboard.fxml"));
+            Parent view = loader.load();
 
-        String fxml = isAdmin ? "/fxml/admin-view.fxml" : "/fxml/reveal-view.fxml";
+            EventsDashboardController controller = loader.getController();
+            controller.setMainLayoutController(this);
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(view);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void navToEventDetails(app.wishlist.model.SecretSantaEvent event) {
+        User me = dataService.getLoggedInUser();
+
+        // Logic:
+        // If I am the SYSTEM Admin -> Admin View
+        // OR If I am the Event Owner -> Admin View
+        // Else -> Reveal View
+
+        boolean canManage = me.isAdmin() || event.getOwnerLogin().equals(me.getLogin());
+        String fxml = canManage ? "/fxml/admin-view.fxml" : "/fxml/reveal-view.fxml";
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent view = loader.load();
 
-            // If it's the Reveal view, pass the controller reference so we can link to the wishlist
-            if (!isAdmin && loader.getController() instanceof RevealController) {
-                ((RevealController) loader.getController()).setMainLayoutController(this);
+            if (canManage) {
+                AdminController controller = loader.getController();
+                controller.setEvent(event);
+            } else {
+                RevealController controller = loader.getController();
+                controller.setMainLayoutController(this);
+                controller.setEvent(event);
             }
 
             contentArea.getChildren().clear();
