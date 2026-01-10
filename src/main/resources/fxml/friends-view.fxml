@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20"
       style="-fx-padding: 30; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
       fx:controller="app.wishlist.controller.FriendsController">
 
-    <Label text="Find a Friend's Wishlist" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    <Label text="Select a user to view their gift ideas:" textFill="gray"/>
+    <Label text="Manage Friends" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-    <ListView fx:id="friendsList" VBox.vgrow="ALWAYS" style="-fx-font-size: 16px;"/>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search users by name or login..." HBox.hgrow="ALWAYS"/>
+        <Button text="Search" onAction="#handleSearch" styleClass="button-outlined"/>
+    </HBox>
+
+    <Separator/>
+
+    <Label fx:id="listTitleLabel" text="My Friends" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+    <ListView fx:id="usersList" VBox.vgrow="ALWAYS" style="-fx-font-size: 14px;"/>
 
 </VBox>
