@@ -1,20 +1,26 @@
 package app.wishlist.controller;
 
 import app.wishlist.model.ReportInterface;
+import app.wishlist.model.SecretSantaEvent;
 import app.wishlist.model.SecretSantaSatisfactionQuestionnaire;
+import app.wishlist.model.User;
 import app.wishlist.service.DataService;
+import app.wishlist.service.SecretSantaService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.util.StringConverter;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class FeedbackController {
 
     private final DataService dataService = DataService.getInstance();
+    private final SecretSantaService eventService = SecretSantaService.getInstance();
+    @FXML
+    private ComboBox<SecretSantaEvent> eventComboBox;
     @FXML
     private Slider ratingSlider;
     @FXML
@@ -23,7 +29,34 @@ public class FeedbackController {
     private CheckBox againCheck;
 
     @FXML
+    public void initialize() {
+        // 1. Configure ComboBox to show Event Names
+        eventComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(SecretSantaEvent event) {
+                return event == null ? "" : event.getName() + " (" + event.getLocalDate() + ")";
+            }
+
+            @Override
+            public SecretSantaEvent fromString(String string) {
+                return null;
+            }
+        });
+
+        // 2. Load Events where I am a participant
+        User me = dataService.getLoggedInUser();
+        eventComboBox.getItems().setAll(eventService.getMyEvents(me));
+    }
+
+    @FXML
     private void handleSubmit() {
+        SecretSantaEvent selectedEvent = eventComboBox.getValue();
+        if (selectedEvent == null) {
+            showAlert("Please select an event first.");
+            return;
+        }
+
+        // 1. Create Report Object
         ReportInterface report = new SecretSantaSatisfactionQuestionnaire(
                 dataService.getLoggedInUser(),
                 (int) ratingSlider.getValue(),
@@ -31,37 +64,43 @@ public class FeedbackController {
                 againCheck.isSelected()
         );
 
-        saveReportToFile(report); // Call the new save method
+        // 2. Save to the specific EVENT file (Append Mode)
+        saveReportToEventFile(selectedEvent, report);
 
-        // Show Success
+        // 3. Success
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Thank You");
         alert.setHeaderText("Feedback Received");
-        alert.setContentText("Your feedback has been saved.");
+        alert.setContentText("Your feedback has been appended to the event report.");
         alert.showAndWait();
 
         commentArea.clear();
         ratingSlider.setValue(5);
     }
 
-    private void saveReportToFile(ReportInterface report) {
-        // 1. Ensure directory exists
+    private void saveReportToEventFile(SecretSantaEvent event, ReportInterface report) {
         File dir = new File("reports");
         if (!dir.exists()) dir.mkdirs();
 
-        // 2. Create unique filename: report_jdoe_12345678.txt
-        String filename = "report_" + report.getAuthor() + "_" + System.currentTimeMillis() + ".txt";
+        // One file per event
+        String filename = "event_" + event.getId() + "_report.txt";
         File file = new File(dir, filename);
 
-        // 3. Write content
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write("TITLE: " + report.getReportTitle() + "\n");
-            writer.write("--------------------------------\n");
+        // Use 'true' in FileWriter constructor for APPEND mode
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            writer.write("----- FEEDBACK FROM: " + report.getAuthor() + " -----\n");
             writer.write(report.getReportContent());
-            System.out.println("Report saved to: " + file.getAbsolutePath());
-        } catch (Exception e) {
+            writer.write("\n------------------------------------------------\n\n");
+            System.out.println("Appended feedback to: " + file.getAbsolutePath());
+        } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Failed to save report.");
+            showAlert("Failed to save report.");
         }
+    }
+
+    private void showAlert(String msg) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

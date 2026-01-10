@@ -40,4 +40,8 @@
     <Button text="🎲 DRAW PAIRS" onAction="#handleDraw"
             styleClass="button-accent" maxWidth="Infinity" style="-fx-font-size: 16px; -fx-padding: 10;"/>
 
+    <Label text="Feedback Analysis" style="-fx-font-weight: bold;"/>
+    <Button text="📂 Load &amp; Analyze Reports" onAction="#handleViewReports"
+            maxWidth="Infinity" style="-fx-font-size: 14px;"/>
+
 </VBox>
