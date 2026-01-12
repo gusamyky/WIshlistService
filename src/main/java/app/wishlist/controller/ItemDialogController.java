@@ -6,9 +6,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.Setter;
 
-public class ItemDialogController {
+public class ItemDialogController extends BaseController {
 
     @FXML
     private TextField nameField;
@@ -22,7 +23,9 @@ public class ItemDialogController {
     // Call this to set the stage for closing later
     @Setter
     private Stage dialogStage;
+    @Getter
     private WishItem resultItem;
+    @Getter
     private boolean saveClicked = false;
     private String currentId = null;
 
@@ -35,14 +38,6 @@ public class ItemDialogController {
             imageUrlField.setText(item.getImageUrl());
             descArea.setText(item.getDescription());
         }
-    }
-
-    public boolean isSaveClicked() {
-        return saveClicked;
-    }
-
-    public WishItem getResultItem() {
-        return resultItem;
     }
 
     @FXML

@@ -4,19 +4,17 @@ import app.wishlist.model.User;
 import app.wishlist.service.DataService;
 import app.wishlist.view.ViewSwitcher;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController {
+public class LoginController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
     private TextField loginField;
     @FXML
     private PasswordField passwordField;
-    @FXML
-    private Label errorLabel;
 
     @FXML
     private void handleLogin() {
@@ -41,11 +39,6 @@ public class LoginController {
         } else {
             showError("Invalid username or password");
         }
-    }
-
-    private void showError(String msg) {
-        errorLabel.setText(msg);
-        errorLabel.setVisible(true);
     }
 
     @FXML

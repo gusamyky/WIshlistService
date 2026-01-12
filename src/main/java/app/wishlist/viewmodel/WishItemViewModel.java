@@ -18,9 +18,6 @@ public class WishItemViewModel {
     private final BooleanProperty isReserved = new SimpleBooleanProperty();
     private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
 
-    // Logic to handle "Shopping Mode" visibility
-    private final BooleanProperty showReserveButton = new SimpleBooleanProperty();
-
     public WishItemViewModel(WishItem item) {
         this.model = item;
 
@@ -36,7 +33,8 @@ public class WishItemViewModel {
                 image.set(new Image(item.getImageUrl(), true)); // background loading
             } else {
                 // Load a placeholder from resources
-                image.set(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/placeholder_gift.png"))));
+                image.set(new Image(
+                        Objects.requireNonNull(getClass().getResourceAsStream("/images/placeholder_gift.png"))));
             }
         } catch (Exception e) {
             // Handle error silently or set fallback

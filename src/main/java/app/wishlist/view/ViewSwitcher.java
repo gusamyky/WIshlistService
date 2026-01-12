@@ -46,13 +46,13 @@ public class ViewSwitcher {
             Parent view;
 
             // (Optional) Simple caching strategy:
-            // if (cache.containsKey(fxmlPath)) {
-            //    view = cache.get(fxmlPath);
-            // } else {
-            FXMLLoader loader = new FXMLLoader(ViewSwitcher.class.getResource(fxmlPath));
-            view = loader.load();
-            //    cache.put(fxmlPath, view);
-            // }
+            if (cache.containsKey(fxmlPath)) {
+                view = cache.get(fxmlPath);
+            } else {
+                FXMLLoader loader = new FXMLLoader(ViewSwitcher.class.getResource(fxmlPath));
+                view = loader.load();
+                cache.put(fxmlPath, view);
+            }
 
             if (root != null) {
                 // We are swapping the content inside the root StackPane

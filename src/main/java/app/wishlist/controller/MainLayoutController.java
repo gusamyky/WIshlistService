@@ -11,7 +11,7 @@ import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 
-public class MainLayoutController {
+public class MainLayoutController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
@@ -21,7 +21,6 @@ public class MainLayoutController {
 
     // Add a field to track current view
     private String currentView = "";
-
 
     @FXML
     public void initialize() {
@@ -43,42 +42,13 @@ public class MainLayoutController {
     }
 
     public void navToFriendWishlist(User friend) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
-//            Parent view = loader.load();
-//
-//            // Setup the controller for the Friend
-//            WishlistController controller = loader.getController();
-//            controller.setup(friend);
-//
-//            contentArea.getChildren().clear();
-//            contentArea.getChildren().add(view);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         loadView("/fxml/wishlist-view.fxml");
     }
 
     @FXML
     private void navToSecretSanta() {
-        // Now everyone goes to the Dashboard first
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/events-dashboard.fxml"));
-//            Parent view = loader.load();
-//
-//            EventsDashboardController controller = loader.getController();
-//            controller.setMainLayoutController(this);
-//
-//            contentArea.getChildren().clear();
-//            contentArea.getChildren().add(view);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         loadView("/fxml/events-dashboard.fxml");
     }
-
 
     public void navToEventDetails(app.wishlist.model.SecretSantaEvent event) {
         User me = dataService.getLoggedInUser();
@@ -122,7 +92,6 @@ public class MainLayoutController {
         dataService.logout();
         ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
     }
-
 
     // --- Helper Method to Swap Views ---
 

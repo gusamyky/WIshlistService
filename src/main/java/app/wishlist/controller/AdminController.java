@@ -13,7 +13,7 @@ import javafx.util.Callback;
 import java.io.File;
 import java.nio.file.Files;
 
-public class AdminController {
+public class AdminController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     private final SecretSantaService secretSantaService = SecretSantaService.getInstance();
@@ -59,7 +59,8 @@ public class AdminController {
         // 1. Load Selected Users (Participants in the event)
         for (String login : currentEvent.getParticipantLogins()) {
             User u = dataService.getUserByLogin(login);
-            if (u != null) selectedUsers.add(u);
+            if (u != null)
+                selectedUsers.add(u);
         }
 
         // 2. Load Available Users (Friends of the logged in user + All users if Admin)
@@ -96,35 +97,26 @@ public class AdminController {
     @FXML
     private void handleDraw() {
         if (selectedUsers.size() < 4) { // Requirement: Min 4
-            showAlert("You need at least 4 participants!");
+            showAlert("Warning", "You need at least 4 participants!");
             return;
         }
 
         secretSantaService.performDraw(currentEvent);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Draw Complete");
-        alert.setHeaderText("Pairs Assigned!");
-        alert.setContentText("The event has been updated.");
-        alert.showAndWait();
-    }
-
-    private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setContentText(msg);
-        alert.showAndWait();
+        showAlert("Draw Complete", "The event has been updated. Pairs Assigned!");
     }
 
     @FXML
     private void handleViewReports() {
-        if (currentEvent == null) return;
+        if (currentEvent == null)
+            return;
 
         File dir = new File("reports");
         String filename = "event_" + currentEvent.getId() + "_report.txt";
         File file = new File(dir, filename);
 
         if (!file.exists()) {
-            showAlert("No feedback reports found for this event yet.");
+            showAlert("Info", "No feedback reports found for this event yet.");
             return;
         }
 
@@ -147,7 +139,7 @@ public class AdminController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error reading report file.");
+            showError("Error reading report file.");
         }
     }
 }

@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class WishlistController {
+public class WishlistController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
@@ -50,7 +50,8 @@ public class WishlistController {
     }
 
     private void refreshView() {
-        if (targetUser == null) return;
+        if (targetUser == null)
+            return;
 
         // Always show who is currently logged in (for context)
         User currentUser = dataService.getLoggedInUser();
@@ -64,17 +65,20 @@ public class WishlistController {
         // Update the Main Title
         if (isOwner) {
             pageTitle.setText("My Wishlist");
-            if (addItemButton != null) addItemButton.setVisible(true);
+            if (addItemButton != null)
+                addItemButton.setVisible(true);
         } else {
             pageTitle.setText(targetUser.getFullName() + "'s Wishlist");
-            if (addItemButton != null) addItemButton.setVisible(false);
+            if (addItemButton != null)
+                addItemButton.setVisible(false);
         }
 
         loadWishlist(isOwner);
     }
 
     private boolean isCurrentUserOwner() {
-        if (targetUser == null || dataService.getLoggedInUser() == null) return false;
+        if (targetUser == null || dataService.getLoggedInUser() == null)
+            return false;
         return targetUser.getLogin().equals(dataService.getLoggedInUser().getLogin());
     }
 
@@ -138,14 +142,10 @@ public class WishlistController {
 
     // New Action Handler
     private void handleReserveItem(WishItemViewModel viewModel) {
-        // Toggle the reservation logic in the ViewModel
-        // The ViewModel should handle the logic of "who reserved it"
         viewModel.toggleReservation(dataService.getLoggedInUser().getLogin());
 
-        // Save change to DataService
         dataService.updateWishItem(viewModel.getModel());
 
-        // Optional: Show a small confirmation or sound
         System.out.println("Item reservation status changed: " + viewModel.isReservedProperty().get());
     }
 
@@ -169,7 +169,7 @@ public class WishlistController {
             if (controller.isSaveClicked()) {
                 WishItem newItem = controller.getResultItem();
                 dataService.updateWishItem(newItem);
-                refreshView(); // Use refreshView()
+                refreshView();
             }
 
         } catch (IOException e) {
@@ -186,7 +186,7 @@ public class WishlistController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             dataService.removeWishItem(viewModel.getModel());
-            refreshView(); // Use refreshView()
+            refreshView();
         }
     }
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FriendsController {
+public class FriendsController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
@@ -50,7 +50,8 @@ public class FriendsController {
     private void showMyFriends() {
         listTitleLabel.setText("My Friends");
         User me = dataService.getLoggedInUser();
-        if (me == null) return;
+        if (me == null)
+            return;
 
         List<User> friends = dataService.getAllUsers().stream()
                 .filter(u -> dataService.isFriend(me, u.getLogin()))
@@ -128,7 +129,8 @@ public class FriendsController {
                     });
                 }
 
-                // Allow clicking the row to view Wishlist (Polymorphism in action if we had different views)
+                // Allow clicking the row to view Wishlist (Polymorphism in action if we had
+                // different views)
                 container.setOnMouseClicked(e -> {
                     if (mainLayoutController != null) {
                         mainLayoutController.navToFriendWishlist(user);

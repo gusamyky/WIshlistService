@@ -5,9 +5,13 @@ import app.wishlist.model.User;
 import app.wishlist.service.DataService;
 import app.wishlist.service.SecretSantaService;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import lombok.Setter;
 
-public class EventsDashboardController {
+public class EventsDashboardController extends BaseController {
 
     private final SecretSantaService eventService = SecretSantaService.getInstance();
     private final DataService dataService = DataService.getInstance();
@@ -17,11 +21,8 @@ public class EventsDashboardController {
     private DatePicker eventDatePicker;
     @FXML
     private ListView<SecretSantaEvent> eventsList;
+    @Setter
     private MainLayoutController mainLayoutController;
-
-    public void setMainLayoutController(MainLayoutController controller) {
-        this.mainLayoutController = controller;
-    }
 
     @FXML
     public void initialize() {
@@ -52,7 +53,7 @@ public class EventsDashboardController {
     @FXML
     private void handleCreate() {
         if (eventNameField.getText().isBlank() || eventDatePicker.getValue() == null) {
-            showAlert("Please enter a name and date.");
+            showError("Please enter a name and date.");
             return;
         }
 
@@ -66,11 +67,5 @@ public class EventsDashboardController {
     private void refreshList() {
         User me = dataService.getLoggedInUser();
         eventsList.getItems().setAll(eventService.getMyEvents(me));
-    }
-
-    private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setContentText(msg);
-        alert.showAndWait();
     }
 }
