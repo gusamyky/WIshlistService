@@ -3,12 +3,14 @@ package app.wishlist.viewmodel;
 import app.wishlist.model.WishItem;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
+import lombok.Getter;
 
 import java.util.Objects;
 
 public class WishItemViewModel {
 
     // The underlying data model
+    @Getter
     private final WishItem model;
 
     // JavaFX Properties for Binding
@@ -24,7 +26,7 @@ public class WishItemViewModel {
         // Initialize properties from Model
         name.set(item.getName());
         description.set(item.getDescription());
-        priceText.set(String.format("$%.2f", item.getPrice()));
+        priceText.set(String.format("%.2f " + item.getPrice().getCurrency().getSymbol(), item.getPrice().getAmount()));
         isReserved.set(item.isReserved());
 
         // Image Handling: Load or fallback
@@ -34,7 +36,7 @@ public class WishItemViewModel {
             } else {
                 // Load a placeholder from resources
                 image.set(new Image(
-                        Objects.requireNonNull(getClass().getResourceAsStream("/images/placeholder_gift.png"))));
+                        Objects.requireNonNull(getClass().getResourceAsStream("/icons/gift_placeholder.png"))));
             }
         } catch (Exception e) {
             // Handle error silently or set fallback
@@ -82,7 +84,4 @@ public class WishItemViewModel {
         // In a real app, you would call a Service here to save to DB
     }
 
-    public WishItem getModel() {
-        return model;
-    }
 }

@@ -1,5 +1,6 @@
 package app.wishlist.controller;
 
+import app.wishlist.consts.AppRoutes;
 import app.wishlist.model.User;
 import app.wishlist.model.WishItem;
 import app.wishlist.service.DataService;
@@ -31,11 +32,27 @@ public class WishlistController extends BaseController {
     @FXML
     private FlowPane itemsContainer;
     @FXML
-    private Button addItemButton; // Make sure fx:id="addItemButton" is in your FXML
+    private Button addItemButton;
+    // Make sure fx:id="addItemButton" is in your FXML
     private User targetUser; // The owner of the wishlist we are viewing
 
     @FXML
     public void initialize() {
+//        eventComboBox.setConverter(new StringConverter<>() {
+//            @Override
+//            public String toString(SecretSantaEvent event) {
+//                return event == null ? "" : event.getName() + " (" + event.getLocalDate() + ")";
+//            }
+//
+//            @Override
+//            public SecretSantaEvent fromString(String string) {
+//                return null;
+//            }
+//        });
+//        currencyComboBox = new ComboBox<>();
+//        currencyComboBox.getItems().setAll(MonetaryAmount.getAvailableCurrencies());
+//        currencyComboBox.setValue(Currency.getInstance("PLN")); // Default selection
+
         // Default to current logged-in user if setup() isn't called
         if (targetUser == null) {
             targetUser = dataService.getLoggedInUser();
@@ -115,7 +132,7 @@ public class WishlistController extends BaseController {
     @FXML
     private void handleAddItem() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/item-dialog-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppRoutes.ITEM_DIALOG));
             Parent page = loader.load();
 
             Stage dialogStage = new Stage();
@@ -151,7 +168,7 @@ public class WishlistController extends BaseController {
 
     private void handleEditItem(WishItemViewModel viewModel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/item-dialog-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppRoutes.ITEM_DIALOG));
             Parent page = loader.load();
 
             Stage dialogStage = new Stage();
@@ -162,7 +179,7 @@ public class WishlistController extends BaseController {
 
             ItemDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setItem(viewModel.getModel());
+            controller.prefillItem(viewModel.getModel());
 
             dialogStage.showAndWait();
 

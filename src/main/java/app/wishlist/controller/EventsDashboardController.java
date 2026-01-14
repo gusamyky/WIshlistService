@@ -28,7 +28,6 @@ public class EventsDashboardController extends BaseController {
     public void initialize() {
         refreshList();
 
-        // Custom Cell to show details
         eventsList.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(SecretSantaEvent event, boolean empty) {
@@ -45,6 +44,7 @@ public class EventsDashboardController extends BaseController {
         // Click Logic
         eventsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && mainLayoutController != null) {
+                System.out.println("Navigating to Event Details from Dashboard for Event: " + newVal.getName());
                 mainLayoutController.navToEventDetails(newVal);
             }
         });

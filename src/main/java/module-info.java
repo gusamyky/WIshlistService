@@ -5,6 +5,7 @@ module app.wishlist {
     requires atlantafx.base;
     requires com.google.gson; // ADD THIS
     requires transitive javafx.graphics;
+    requires java.desktop;
 
     opens app.wishlist to javafx.fxml;
 

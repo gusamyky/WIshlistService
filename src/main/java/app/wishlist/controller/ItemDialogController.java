@@ -1,13 +1,16 @@
 package app.wishlist.controller;
 
+import app.wishlist.model.MonetaryAmount;
 import app.wishlist.model.WishItem;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Currency;
 
 public class ItemDialogController extends BaseController {
 
@@ -19,8 +22,9 @@ public class ItemDialogController extends BaseController {
     private TextField imageUrlField;
     @FXML
     private TextArea descArea;
+    @FXML
+    private ComboBox<Currency> currencyComboBox;
 
-    // Call this to set the stage for closing later
     @Setter
     private Stage dialogStage;
     @Getter
@@ -28,29 +32,68 @@ public class ItemDialogController extends BaseController {
     @Getter
     private boolean saveClicked = false;
     private String currentId = null;
+    private boolean isEditableItemReserved;
 
-    // Call this if editing an existing item (to pre-fill fields)
-    public void setItem(WishItem item) {
+    /**
+     * Called automatically by JavaFX after the FXML is loaded.
+     * Use this to setup static data like the currency list.
+     */
+    @FXML
+    public void initialize() {
+        // Load currencies once when the view initializes
+        currencyComboBox.getItems().addAll(MonetaryAmount.getAvailableCurrencies());
+
+        // specific default, or just selectFirst()
+        currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
+    }
+
+    public void prefillItem(WishItem item) {
         if (item != null) {
+            // --- EDIT MODE ---
             this.currentId = item.getId();
+            this.isEditableItemReserved = item.isReserved();
+
             nameField.setText(item.getName());
-            priceField.setText(String.valueOf(item.getPrice()));
             imageUrlField.setText(item.getImageUrl());
             descArea.setText(item.getDescription());
+
+            // 1. Get raw number (10.50) not string object (10.50 PLN)
+            priceField.setText(String.valueOf(item.getPrice().getAmount()));
+
+            // 2. Select the currency specifically saved in this item
+            currencyComboBox.getSelectionModel().select(item.getPrice().getCurrency());
+        } else {
+            // --- CREATE MODE ---
+            // Ensure fields are clean if controller is reused
+            this.currentId = null;
+            nameField.clear();
+            priceField.clear();
+            imageUrlField.clear();
+            descArea.clear();
+            // Default currency
+            currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
         }
     }
 
     @FXML
     private void handleSave() {
         if (isInputValid()) {
-            // Build the item from fields
+            // Parse the double value
+            double amount = Double.parseDouble(priceField.getText());
+            // Get selected currency
+            Currency selectedCurrency = currencyComboBox.getValue();
+
+            // Create the MonetaryAmount
+            var price = new MonetaryAmount(amount, selectedCurrency);
+
             resultItem = WishItem.builder()
                     .id(currentId)
                     .name(nameField.getText())
                     .description(descArea.getText())
-                    .price(Double.parseDouble(priceField.getText()))
+                    .price(price)
                     .imageUrl(imageUrlField.getText())
-                    .isReserved(false) // Default for new items
+                    // If creating new, reserved is false by default
+                    .isReserved(currentId != null && isEditableItemReserved)
                     .build();
 
             saveClicked = true;
@@ -70,23 +113,20 @@ public class ItemDialogController extends BaseController {
             errorMessage += "No valid name!\n";
         }
 
-        // Validate Price
         try {
             Double.parseDouble(priceField.getText());
         } catch (NumberFormatException e) {
-            errorMessage += "Price must be a valid number!\n";
+            errorMessage += "Price must be a valid number (use '.' for decimals)!\n";
+        }
+
+        if (currencyComboBox.getValue() == null) {
+            errorMessage += "Please select a currency!\n";
         }
 
         if (errorMessage.isEmpty()) {
             return true;
         } else {
-            // Show Error Alert
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initOwner(dialogStage);
-            alert.setTitle("Invalid Fields");
-            alert.setHeaderText("Please correct invalid fields");
-            alert.setContentText(errorMessage);
-            alert.showAndWait();
+            showAlert("Invalid Fields", "Please correct invalid fields", errorMessage);
             return false;
         }
     }

@@ -20,7 +20,7 @@ public class AdminController extends BaseController {
     private final ObservableList<User> availableUsers = FXCollections.observableArrayList();
     private final ObservableList<User> selectedUsers = FXCollections.observableArrayList();
     @FXML
-    private DatePicker datePicker; // Note: We might display this read-only or allow edits
+    private DatePicker datePicker;
     @FXML
     private ListView<User> availableList;
     @FXML
@@ -29,7 +29,6 @@ public class AdminController extends BaseController {
 
     @FXML
     public void initialize() {
-        // Setup formatting
         Callback<ListView<User>, ListCell<User>> cellFactory = param -> new ListCell<>() {
             @Override
             protected void updateItem(User item, boolean empty) {
@@ -53,18 +52,23 @@ public class AdminController extends BaseController {
     }
 
     private void refreshLists() {
-        availableUsers.clear();
+        loadSelectedUsers();
+        loadAvailableUsers();
+    }
+
+    private void loadSelectedUsers() {
         selectedUsers.clear();
 
-        // 1. Load Selected Users (Participants in the event)
         for (String login : currentEvent.getParticipantLogins()) {
             User u = dataService.getUserByLogin(login);
             if (u != null)
                 selectedUsers.add(u);
         }
+    }
 
-        // 2. Load Available Users (Friends of the logged in user + All users if Admin)
-        // For simplicity, let's load ALL users minus the ones already selected
+    private void loadAvailableUsers() {
+        availableUsers.clear();
+
         for (User u : dataService.getAllUsers()) {
             if (!currentEvent.getParticipantLogins().contains(u.getLogin())) {
                 availableUsers.add(u);
@@ -76,10 +80,9 @@ public class AdminController extends BaseController {
     private void handleAdd() {
         User selected = availableList.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Update UI
             availableUsers.remove(selected);
             selectedUsers.add(selected);
-            // Update Model immediately
+
             secretSantaService.addParticipant(currentEvent, selected);
         }
     }
@@ -96,7 +99,7 @@ public class AdminController extends BaseController {
 
     @FXML
     private void handleDraw() {
-        if (selectedUsers.size() < 4) { // Requirement: Min 4
+        if (selectedUsers.size() < 4) {
             showAlert("Warning", "You need at least 4 participants!");
             return;
         }
@@ -121,10 +124,8 @@ public class AdminController extends BaseController {
         }
 
         try {
-            // Read content
             String content = Files.readString(file.toPath());
 
-            // Show in Dialog
             TextArea textArea = new TextArea(content);
             textArea.setEditable(false);
             textArea.setWrapText(true);

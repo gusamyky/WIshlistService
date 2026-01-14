@@ -1,9 +1,8 @@
 package app.wishlist.controller;
 
+import app.wishlist.consts.AppRoutes;
 import app.wishlist.service.DataService;
-import app.wishlist.view.ViewSwitcher;
 import javafx.fxml.FXML;
-
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -35,7 +34,7 @@ public class RegisterController extends BaseController {
 
         if (success) {
             showAlert("Success", "Account created! Please log in.");
-            ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
+            navigate(AppRoutes.LOGIN);
         } else {
             showError("Username '" + loginField.getText() + "' is already taken.");
         }
@@ -43,6 +42,6 @@ public class RegisterController extends BaseController {
 
     @FXML
     private void handleBack() {
-        ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
+        navigate(AppRoutes.LOGIN);
     }
 }
