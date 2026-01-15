@@ -1,13 +1,12 @@
 package app.wishlist.controller;
 
+import app.wishlist.consts.AppRoutes;
 import app.wishlist.service.DataService;
-import app.wishlist.view.ViewSwitcher;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class RegisterController {
+public class RegisterController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
@@ -22,7 +21,7 @@ public class RegisterController {
     @FXML
     private void handleRegister() {
         if (loginField.getText().isBlank() || firstNameField.getText().isBlank()) {
-            showAlert("Error", "Please fill in all fields.");
+            showError("Please fill in all fields.");
             return;
         }
 
@@ -31,27 +30,18 @@ public class RegisterController {
                 passField.getText(),
                 firstNameField.getText().trim(),
                 lastNameField.getText().trim(),
-                false
-        );
+                false);
 
         if (success) {
             showAlert("Success", "Account created! Please log in.");
-            ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
+            navigate(AppRoutes.LOGIN);
         } else {
-            showAlert("Error", "Username '" + loginField.getText() + "' is already taken.");
+            showError("Username '" + loginField.getText() + "' is already taken.");
         }
     }
 
     @FXML
     private void handleBack() {
-        ViewSwitcher.switchTo(ViewSwitcher.LOGIN);
-    }
-
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(title.equals("Error") ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+        navigate(AppRoutes.LOGIN);
     }
 }

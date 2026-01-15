@@ -17,8 +17,11 @@
         <Label text="Item Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="nameField" promptText="e.g. Gaming Mouse" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="Price ($):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="priceField" promptText="0.00" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Price:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <TextField fx:id="priceField" promptText="0.00" HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="currencyComboBox" prefWidth="90" promptText="PLN"/>
+        </HBox>
 
         <Label text="Image URL:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <TextField fx:id="imageUrlField" promptText="https://..." GridPane.rowIndex="2" GridPane.columnIndex="1"/>

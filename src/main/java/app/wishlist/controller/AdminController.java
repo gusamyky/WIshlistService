@@ -13,14 +13,14 @@ import javafx.util.Callback;
 import java.io.File;
 import java.nio.file.Files;
 
-public class AdminController {
+public class AdminController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     private final SecretSantaService secretSantaService = SecretSantaService.getInstance();
     private final ObservableList<User> availableUsers = FXCollections.observableArrayList();
     private final ObservableList<User> selectedUsers = FXCollections.observableArrayList();
     @FXML
-    private DatePicker datePicker; // Note: We might display this read-only or allow edits
+    private DatePicker datePicker;
     @FXML
     private ListView<User> availableList;
     @FXML
@@ -29,7 +29,6 @@ public class AdminController {
 
     @FXML
     public void initialize() {
-        // Setup formatting
         Callback<ListView<User>, ListCell<User>> cellFactory = param -> new ListCell<>() {
             @Override
             protected void updateItem(User item, boolean empty) {
@@ -53,17 +52,23 @@ public class AdminController {
     }
 
     private void refreshLists() {
-        availableUsers.clear();
+        loadSelectedUsers();
+        loadAvailableUsers();
+    }
+
+    private void loadSelectedUsers() {
         selectedUsers.clear();
 
-        // 1. Load Selected Users (Participants in the event)
         for (String login : currentEvent.getParticipantLogins()) {
             User u = dataService.getUserByLogin(login);
-            if (u != null) selectedUsers.add(u);
+            if (u != null)
+                selectedUsers.add(u);
         }
+    }
 
-        // 2. Load Available Users (Friends of the logged in user + All users if Admin)
-        // For simplicity, let's load ALL users minus the ones already selected
+    private void loadAvailableUsers() {
+        availableUsers.clear();
+
         for (User u : dataService.getAllUsers()) {
             if (!currentEvent.getParticipantLogins().contains(u.getLogin())) {
                 availableUsers.add(u);
@@ -75,10 +80,9 @@ public class AdminController {
     private void handleAdd() {
         User selected = availableList.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Update UI
             availableUsers.remove(selected);
             selectedUsers.add(selected);
-            // Update Model immediately
+
             secretSantaService.addParticipant(currentEvent, selected);
         }
     }
@@ -95,44 +99,33 @@ public class AdminController {
 
     @FXML
     private void handleDraw() {
-        if (selectedUsers.size() < 4) { // Requirement: Min 4
-            showAlert("You need at least 4 participants!");
+        if (selectedUsers.size() < 4) {
+            showAlert("Warning", "You need at least 4 participants!");
             return;
         }
 
         secretSantaService.performDraw(currentEvent);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Draw Complete");
-        alert.setHeaderText("Pairs Assigned!");
-        alert.setContentText("The event has been updated.");
-        alert.showAndWait();
-    }
-
-    private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setContentText(msg);
-        alert.showAndWait();
+        showAlert("Draw Complete", "The event has been updated. Pairs Assigned!");
     }
 
     @FXML
     private void handleViewReports() {
-        if (currentEvent == null) return;
+        if (currentEvent == null)
+            return;
 
         File dir = new File("reports");
         String filename = "event_" + currentEvent.getId() + "_report.txt";
         File file = new File(dir, filename);
 
         if (!file.exists()) {
-            showAlert("No feedback reports found for this event yet.");
+            showAlert("Info", "No feedback reports found for this event yet.");
             return;
         }
 
         try {
-            // Read content
             String content = Files.readString(file.toPath());
 
-            // Show in Dialog
             TextArea textArea = new TextArea(content);
             textArea.setEditable(false);
             textArea.setWrapText(true);
@@ -147,7 +140,7 @@ public class AdminController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error reading report file.");
+            showError("Error reading report file.");
         }
     }
 }

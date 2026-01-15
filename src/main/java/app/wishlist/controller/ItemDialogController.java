@@ -1,14 +1,18 @@
 package app.wishlist.controller;
 
+import app.wishlist.model.MonetaryAmount;
 import app.wishlist.model.WishItem;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.Setter;
 
-public class ItemDialogController {
+import java.util.Currency;
+
+public class ItemDialogController extends BaseController {
 
     @FXML
     private TextField nameField;
@@ -18,44 +22,64 @@ public class ItemDialogController {
     private TextField imageUrlField;
     @FXML
     private TextArea descArea;
+    @FXML
+    private ComboBox<Currency> currencyComboBox;
 
-    // Call this to set the stage for closing later
     @Setter
     private Stage dialogStage;
+    @Getter
     private WishItem resultItem;
+    @Getter
     private boolean saveClicked = false;
     private String currentId = null;
+    private boolean isEditableItemReserved;
 
-    // Call this if editing an existing item (to pre-fill fields)
-    public void setItem(WishItem item) {
+    @FXML
+    public void initialize() {
+        // Load currencies once when the view initializes
+        currencyComboBox.getItems().addAll(MonetaryAmount.getAvailableCurrencies());
+
+        // the default selection
+        currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
+    }
+
+    public void prefillItem(WishItem item) {
         if (item != null) {
+            // --- EDIT MODE ---
             this.currentId = item.getId();
+            this.isEditableItemReserved = item.isReserved();
+
             nameField.setText(item.getName());
-            priceField.setText(String.valueOf(item.getPrice()));
             imageUrlField.setText(item.getImageUrl());
             descArea.setText(item.getDescription());
+            priceField.setText(String.valueOf(item.getPrice().getAmount()));
+            currencyComboBox.getSelectionModel().select(item.getPrice().getCurrency());
+        } else {
+            // --- CREATE MODE ---
+            this.currentId = null;
+            nameField.clear();
+            priceField.clear();
+            imageUrlField.clear();
+            descArea.clear();
+            currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
         }
-    }
-
-    public boolean isSaveClicked() {
-        return saveClicked;
-    }
-
-    public WishItem getResultItem() {
-        return resultItem;
     }
 
     @FXML
     private void handleSave() {
         if (isInputValid()) {
-            // Build the item from fields
+            double amount = Double.parseDouble(priceField.getText());
+            Currency selectedCurrency = currencyComboBox.getValue();
+
+            var price = new MonetaryAmount(amount, selectedCurrency);
+
             resultItem = WishItem.builder()
                     .id(currentId)
                     .name(nameField.getText())
                     .description(descArea.getText())
-                    .price(Double.parseDouble(priceField.getText()))
+                    .price(price)
                     .imageUrl(imageUrlField.getText())
-                    .isReserved(false) // Default for new items
+                    .isReserved(currentId != null && isEditableItemReserved)
                     .build();
 
             saveClicked = true;
@@ -75,23 +99,20 @@ public class ItemDialogController {
             errorMessage += "No valid name!\n";
         }
 
-        // Validate Price
         try {
             Double.parseDouble(priceField.getText());
         } catch (NumberFormatException e) {
-            errorMessage += "Price must be a valid number!\n";
+            errorMessage += "Price must be a valid number (use '.' for decimals)!\n";
+        }
+
+        if (currencyComboBox.getValue() == null) {
+            errorMessage += "Please select a currency!\n";
         }
 
         if (errorMessage.isEmpty()) {
             return true;
         } else {
-            // Show Error Alert
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.initOwner(dialogStage);
-            alert.setTitle("Invalid Fields");
-            alert.setHeaderText("Please correct invalid fields");
-            alert.setContentText(errorMessage);
-            alert.showAndWait();
+            showAlert("Invalid Fields", "Please correct invalid fields", errorMessage);
             return false;
         }
     }

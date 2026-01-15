@@ -7,7 +7,10 @@ import app.wishlist.model.User;
 import app.wishlist.service.DataService;
 import app.wishlist.service.SecretSantaService;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.util.StringConverter;
 
 import java.io.BufferedWriter;
@@ -15,7 +18,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FeedbackController {
+public class FeedbackController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     private final SecretSantaService eventService = SecretSantaService.getInstance();
@@ -52,7 +55,7 @@ public class FeedbackController {
     private void handleSubmit() {
         SecretSantaEvent selectedEvent = eventComboBox.getValue();
         if (selectedEvent == null) {
-            showAlert("Please select an event first.");
+            showError("Please select an event first.");
             return;
         }
 
@@ -61,18 +64,13 @@ public class FeedbackController {
                 dataService.getLoggedInUser(),
                 (int) ratingSlider.getValue(),
                 commentArea.getText(),
-                againCheck.isSelected()
-        );
+                againCheck.isSelected());
 
         // 2. Save to the specific EVENT file (Append Mode)
         saveReportToEventFile(selectedEvent, report);
 
         // 3. Success
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Thank You");
-        alert.setHeaderText("Feedback Received");
-        alert.setContentText("Your feedback has been appended to the event report.");
-        alert.showAndWait();
+        showAlert("Thank You", "Your feedback has been appended to the event report.");
 
         commentArea.clear();
         ratingSlider.setValue(5);
@@ -94,13 +92,7 @@ public class FeedbackController {
             System.out.println("Appended feedback to: " + file.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Failed to save report.");
+            showError("Failed to save report.");
         }
-    }
-
-    private void showAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setContentText(msg);
-        alert.showAndWait();
     }
 }

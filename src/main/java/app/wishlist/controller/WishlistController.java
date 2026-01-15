@@ -1,5 +1,6 @@
 package app.wishlist.controller;
 
+import app.wishlist.consts.AppRoutes;
 import app.wishlist.model.User;
 import app.wishlist.model.WishItem;
 import app.wishlist.service.DataService;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class WishlistController {
+public class WishlistController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
     @FXML
@@ -31,50 +32,50 @@ public class WishlistController {
     @FXML
     private FlowPane itemsContainer;
     @FXML
-    private Button addItemButton; // Make sure fx:id="addItemButton" is in your FXML
-    private User targetUser; // The owner of the wishlist we are viewing
+    private Button addItemButton;
+    private User targetUser;
 
     @FXML
     public void initialize() {
-        // Default to current logged-in user if setup() isn't called
         if (targetUser == null) {
             targetUser = dataService.getLoggedInUser();
         }
+
         refreshView();
     }
 
-    // Call this from MainLayoutController to switch modes
     public void setup(User user) {
         this.targetUser = user;
         refreshView();
     }
 
     private void refreshView() {
-        if (targetUser == null) return;
+        if (targetUser == null)
+            return;
 
-        // Always show who is currently logged in (for context)
         User currentUser = dataService.getLoggedInUser();
         if (currentUser != null) {
             userLabel.setText("(Logged in as " + currentUser.getLogin() + ")");
         }
 
-        // Determine Mode
         boolean isOwner = isCurrentUserOwner();
 
-        // Update the Main Title
         if (isOwner) {
             pageTitle.setText("My Wishlist");
-            if (addItemButton != null) addItemButton.setVisible(true);
+            if (addItemButton != null)
+                addItemButton.setVisible(true);
         } else {
             pageTitle.setText(targetUser.getFullName() + "'s Wishlist");
-            if (addItemButton != null) addItemButton.setVisible(false);
+            if (addItemButton != null)
+                addItemButton.setVisible(false);
         }
 
         loadWishlist(isOwner);
     }
 
     private boolean isCurrentUserOwner() {
-        if (targetUser == null || dataService.getLoggedInUser() == null) return false;
+        if (targetUser == null || dataService.getLoggedInUser() == null)
+            return false;
         return targetUser.getLogin().equals(dataService.getLoggedInUser().getLogin());
     }
 
@@ -100,7 +101,7 @@ public class WishlistController {
                         viewModel,
                         null,
                         null,
-                        this::handleReserveItem // New Action
+                        this::handleReserveItem
                 ));
             }
         }
@@ -111,7 +112,7 @@ public class WishlistController {
     @FXML
     private void handleAddItem() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/item-dialog-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppRoutes.ITEM_DIALOG));
             Parent page = loader.load();
 
             Stage dialogStage = new Stage();
@@ -128,7 +129,8 @@ public class WishlistController {
             if (controller.isSaveClicked()) {
                 WishItem newItem = controller.getResultItem();
                 dataService.addWishItem(newItem);
-                refreshView(); // Use refreshView() instead of calling loadWishlist() directly
+
+                refreshView();
             }
 
         } catch (IOException e) {
@@ -136,22 +138,15 @@ public class WishlistController {
         }
     }
 
-    // New Action Handler
     private void handleReserveItem(WishItemViewModel viewModel) {
-        // Toggle the reservation logic in the ViewModel
-        // The ViewModel should handle the logic of "who reserved it"
         viewModel.toggleReservation(dataService.getLoggedInUser().getLogin());
 
-        // Save change to DataService
         dataService.updateWishItem(viewModel.getModel());
-
-        // Optional: Show a small confirmation or sound
-        System.out.println("Item reservation status changed: " + viewModel.isReservedProperty().get());
     }
 
     private void handleEditItem(WishItemViewModel viewModel) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/item-dialog-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppRoutes.ITEM_DIALOG));
             Parent page = loader.load();
 
             Stage dialogStage = new Stage();
@@ -162,14 +157,15 @@ public class WishlistController {
 
             ItemDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setItem(viewModel.getModel());
+            controller.prefillItem(viewModel.getModel());
 
             dialogStage.showAndWait();
 
             if (controller.isSaveClicked()) {
                 WishItem newItem = controller.getResultItem();
                 dataService.updateWishItem(newItem);
-                refreshView(); // Use refreshView()
+
+                refreshView();
             }
 
         } catch (IOException e) {
@@ -186,7 +182,8 @@ public class WishlistController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             dataService.removeWishItem(viewModel.getModel());
-            refreshView(); // Use refreshView()
+
+            refreshView();
         }
     }
 }

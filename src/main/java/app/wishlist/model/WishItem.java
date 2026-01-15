@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WishItem {
-    private String id; // Unique ID for finding items
+    private String id;
     private String name;
     private String description;
-    private double price;
+    private MonetaryAmount price;
     private String imageUrl;
 
     // Reservation Logic

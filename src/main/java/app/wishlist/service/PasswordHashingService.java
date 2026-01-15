@@ -12,7 +12,6 @@ public class PasswordHashingService {
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
-    private static final byte[] SALT = new byte[16];
 
     // Helper: Generate a random salt
     public static byte[] getSalt() {
