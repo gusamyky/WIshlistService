@@ -22,7 +22,6 @@ public class DataService {
     private Map<String, List<WishItem>> wishlists = new HashMap<>();
 
     private DataService() {
-        // --- REQUIREMENT: Inner Class / Anonymous Class ---
         JsonDeserializer<User> userDeserializer = new JsonDeserializer<User>() {
             @Override
             public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -30,14 +29,9 @@ public class DataService {
                 String type = jsonObject.has("type") ? jsonObject.get("type").getAsString() : "USER";
 
                 if ("ADMIN".equals(type)) {
-                    // This is safe because AdminUser.class is DIFFERENT from User.class
-                    // so it won't trigger this deserializer again.
                     return context.deserialize(jsonObject, AdminUser.class);
                 }
 
-                // --- FIX IS HERE ---
-                // We cannot use context.deserialize(json, User.class) because it triggers THIS adapter again (Loop).
-                // Instead, we use a temporary default Gson instance to parse the concrete User class.
                 return new Gson().fromJson(jsonObject, User.class);
             }
         };
@@ -55,13 +49,7 @@ public class DataService {
         return INSTANCE;
     }
 
-    // --- Auth ---
-    public ObjectProperty<User> loggedInUserProperty() {
-        return loggedInUser;
-    }
-
     public boolean authenticate(String login, String inputPassword) {
-        // 1. Find user by login
         User user = users.stream()
                 .filter(u -> u.getLogin().equalsIgnoreCase(login))
                 .findFirst()
@@ -69,13 +57,10 @@ public class DataService {
 
         if (user == null) return false;
 
-        // 2. Get the stored "Salt:Hash" string
         String storedValue = user.getPassword();
 
-        // 3. Split it to recover the ORIGINAL Salt
         String[] parts = storedValue.split(":");
 
-        // Safety check: ensure data isn't corrupted
         if (parts.length != 2) {
             System.err.println("Error: Stored password format is invalid for user " + login);
             return false;
@@ -84,21 +69,13 @@ public class DataService {
         String storedSaltString = parts[0];
         String storedHash = parts[1];
 
-        // 4. Decode the Salt back to bytes
         byte[] originalSalt = Base64.getDecoder().decode(storedSaltString);
 
-        // 5. Hash the input password using the ORIGINAL Salt
         String newHash = PasswordHashingService.hashPassword(inputPassword, originalSalt);
 
-        // Debugging print (Optional - remove after fixing)
-        System.out.println("Stored: " + storedHash);
-        System.out.println("Calc'd: " + newHash);
-
-        // 6. Compare
         return newHash.equals(storedHash);
     }
 
-    // Also, update helper to get user object by login if needed
     public User getUserByLogin(String login) {
         return users.stream()
                 .filter(u -> u.getLogin().equalsIgnoreCase(login))
@@ -122,26 +99,23 @@ public class DataService {
         return users;
     }
 
-    // --- UPDATED REGISTRATION ---
-    // We need to allow registering an Admin (for testing) or regular user
     public boolean registerUser(String login, String password, String firstName, String lastName, boolean isAdmin) {
         boolean exists = users.stream().anyMatch(u -> u.getLogin().equalsIgnoreCase(login));
         if (exists) return false;
 
-        // 1. Generate new Salt
         byte[] salt = PasswordHashingService.getSalt();
 
-        // 2. Hash password with that Salt
         String hash = PasswordHashingService.hashPassword(password, salt);
 
-        // 3. Combine Salt + Hash (Format: "salt:hash")
         String saltString = Base64.getEncoder().encodeToString(salt);
         String storedPassword = saltString + ":" + hash;
 
-        // 4. Save User
         User newUser = new User(login, storedPassword, firstName, lastName);
+
         users.add(newUser);
+
         wishlists.put(login, new ArrayList<>());
+
         saveData();
 
         return true;
@@ -151,20 +125,23 @@ public class DataService {
 
     public void addFriend(User me, String friendLogin) {
         if (me == null || friendLogin == null) return;
-        // Logic: Add friend ID to my list
+
         me.getFriends().add(friendLogin);
-        saveData(); // Persist changes
+
+        saveData();
     }
 
     public void removeFriend(User me, String friendLogin) {
         if (me == null || friendLogin == null) return;
+
         me.getFriends().remove(friendLogin);
+
         saveData();
     }
 
-    // Helper to check if someone is already a friend
     public boolean isFriend(User me, String otherLogin) {
         if (me == null) return false;
+
         return me.getFriends().contains(otherLogin);
     }
 
@@ -176,31 +153,37 @@ public class DataService {
 
     public List<WishItem> getCurrentUserWishlist() {
         if (getLoggedInUser() == null) return new ArrayList<>();
+
         return getWishlistForUser(getLoggedInUser());
     }
 
     public void addWishItem(WishItem item) {
         if (getLoggedInUser() == null) return;
+
         if (item.getId() == null) item.setId(UUID.randomUUID().toString());
 
         getWishlistForUser(getLoggedInUser()).add(item);
-        saveData(); // <--- SAVE
+
+        saveData();
     }
 
     public void removeWishItem(WishItem item) {
         if (getLoggedInUser() == null) return;
+
         getWishlistForUser(getLoggedInUser()).removeIf(i -> i.getId().equals(item.getId()));
-        saveData(); // <--- SAVE
+
+        saveData();
     }
 
     public void updateWishItem(WishItem newItem) {
-        // Search all lists to find the item and update it
         for (List<WishItem> list : wishlists.values()) {
             for (int i = 0; i < list.size(); i++) {
                 WishItem existing = list.get(i);
+
                 if (existing.getId() != null && existing.getId().equals(newItem.getId())) {
                     list.set(i, newItem);
-                    saveData(); // <--- SAVE
+                    saveData();
+
                     return;
                 }
             }
@@ -214,6 +197,7 @@ public class DataService {
             DataWrapper wrapper = new DataWrapper();
             wrapper.users = this.users;
             wrapper.wishlists = this.wishlists;
+
             gson.toJson(wrapper, writer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -223,15 +207,18 @@ public class DataService {
     private void loadData() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
-            seedData(); // You might want to seed a default Admin here
+            seedData();
             saveData();
+
             return;
         }
 
         try (Reader reader = new FileReader(DATA_FILE)) {
             Type type = new TypeToken<DataWrapper>() {
             }.getType();
+
             DataWrapper wrapper = gson.fromJson(reader, type);
+
             if (wrapper != null) {
                 this.users = wrapper.users != null ? wrapper.users : new ArrayList<>();
                 this.wishlists = wrapper.wishlists != null ? wrapper.wishlists : new HashMap<>();
@@ -242,7 +229,6 @@ public class DataService {
     }
 
     private void seedData() {
-        // Create a default Admin
         registerUser("admin", "admin", "System", "Admin", true);
     }
 

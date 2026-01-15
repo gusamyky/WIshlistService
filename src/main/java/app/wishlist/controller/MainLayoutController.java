@@ -24,10 +24,10 @@ public class MainLayoutController extends BaseController {
     @FXML
     public void initialize() {
         User currentUser = dataService.getLoggedInUser();
+
         if (currentUser != null) {
             userNameLabel.setText(currentUser.getFullName());
         }
-
 
         navToWishlist();
     }
@@ -39,12 +39,10 @@ public class MainLayoutController extends BaseController {
     }
 
     public void navToFriendWishlist(User friend) {
-//        loadView(AppRoutes.WISHLIST);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/wishlist-view.fxml"));
             Parent view = loader.load();
 
-            // Setup the controller for the Friend
             WishlistController controller = loader.getController();
             controller.setup(friend);
 
@@ -66,9 +64,6 @@ public class MainLayoutController extends BaseController {
 
         boolean canManage = me.isAdmin() || event.getOwnerLogin().equals(me.getLogin());
         String fxml = canManage ? AppRoutes.ADMIN : AppRoutes.REVEAL;
-
-        System.out.println("Navigating to Event Details. Can Manage: " + canManage + " Event: " + event.getName()
-                + " for User: " + me.getLogin() + "Route: " + fxml);
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));

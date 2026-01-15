@@ -33,34 +33,17 @@ public class WishlistController extends BaseController {
     private FlowPane itemsContainer;
     @FXML
     private Button addItemButton;
-    // Make sure fx:id="addItemButton" is in your FXML
-    private User targetUser; // The owner of the wishlist we are viewing
+    private User targetUser;
 
     @FXML
     public void initialize() {
-//        eventComboBox.setConverter(new StringConverter<>() {
-//            @Override
-//            public String toString(SecretSantaEvent event) {
-//                return event == null ? "" : event.getName() + " (" + event.getLocalDate() + ")";
-//            }
-//
-//            @Override
-//            public SecretSantaEvent fromString(String string) {
-//                return null;
-//            }
-//        });
-//        currencyComboBox = new ComboBox<>();
-//        currencyComboBox.getItems().setAll(MonetaryAmount.getAvailableCurrencies());
-//        currencyComboBox.setValue(Currency.getInstance("PLN")); // Default selection
-
-        // Default to current logged-in user if setup() isn't called
         if (targetUser == null) {
             targetUser = dataService.getLoggedInUser();
         }
+
         refreshView();
     }
 
-    // Call this from MainLayoutController to switch modes
     public void setup(User user) {
         this.targetUser = user;
         refreshView();
@@ -70,16 +53,13 @@ public class WishlistController extends BaseController {
         if (targetUser == null)
             return;
 
-        // Always show who is currently logged in (for context)
         User currentUser = dataService.getLoggedInUser();
         if (currentUser != null) {
             userLabel.setText("(Logged in as " + currentUser.getLogin() + ")");
         }
 
-        // Determine Mode
         boolean isOwner = isCurrentUserOwner();
 
-        // Update the Main Title
         if (isOwner) {
             pageTitle.setText("My Wishlist");
             if (addItemButton != null)
@@ -121,7 +101,7 @@ public class WishlistController extends BaseController {
                         viewModel,
                         null,
                         null,
-                        this::handleReserveItem // New Action
+                        this::handleReserveItem
                 ));
             }
         }
@@ -149,7 +129,8 @@ public class WishlistController extends BaseController {
             if (controller.isSaveClicked()) {
                 WishItem newItem = controller.getResultItem();
                 dataService.addWishItem(newItem);
-                refreshView(); // Use refreshView() instead of calling loadWishlist() directly
+
+                refreshView();
             }
 
         } catch (IOException e) {
@@ -157,13 +138,10 @@ public class WishlistController extends BaseController {
         }
     }
 
-    // New Action Handler
     private void handleReserveItem(WishItemViewModel viewModel) {
         viewModel.toggleReservation(dataService.getLoggedInUser().getLogin());
 
         dataService.updateWishItem(viewModel.getModel());
-
-        System.out.println("Item reservation status changed: " + viewModel.isReservedProperty().get());
     }
 
     private void handleEditItem(WishItemViewModel viewModel) {
@@ -186,6 +164,7 @@ public class WishlistController extends BaseController {
             if (controller.isSaveClicked()) {
                 WishItem newItem = controller.getResultItem();
                 dataService.updateWishItem(newItem);
+
                 refreshView();
             }
 
@@ -203,6 +182,7 @@ public class WishlistController extends BaseController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             dataService.removeWishItem(viewModel.getModel());
+
             refreshView();
         }
     }

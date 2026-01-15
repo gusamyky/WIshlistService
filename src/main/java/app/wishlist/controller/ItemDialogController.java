@@ -34,16 +34,12 @@ public class ItemDialogController extends BaseController {
     private String currentId = null;
     private boolean isEditableItemReserved;
 
-    /**
-     * Called automatically by JavaFX after the FXML is loaded.
-     * Use this to setup static data like the currency list.
-     */
     @FXML
     public void initialize() {
         // Load currencies once when the view initializes
         currencyComboBox.getItems().addAll(MonetaryAmount.getAvailableCurrencies());
 
-        // specific default, or just selectFirst()
+        // the default selection
         currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
     }
 
@@ -56,21 +52,15 @@ public class ItemDialogController extends BaseController {
             nameField.setText(item.getName());
             imageUrlField.setText(item.getImageUrl());
             descArea.setText(item.getDescription());
-
-            // 1. Get raw number (10.50) not string object (10.50 PLN)
             priceField.setText(String.valueOf(item.getPrice().getAmount()));
-
-            // 2. Select the currency specifically saved in this item
             currencyComboBox.getSelectionModel().select(item.getPrice().getCurrency());
         } else {
             // --- CREATE MODE ---
-            // Ensure fields are clean if controller is reused
             this.currentId = null;
             nameField.clear();
             priceField.clear();
             imageUrlField.clear();
             descArea.clear();
-            // Default currency
             currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
         }
     }
@@ -78,12 +68,9 @@ public class ItemDialogController extends BaseController {
     @FXML
     private void handleSave() {
         if (isInputValid()) {
-            // Parse the double value
             double amount = Double.parseDouble(priceField.getText());
-            // Get selected currency
             Currency selectedCurrency = currencyComboBox.getValue();
 
-            // Create the MonetaryAmount
             var price = new MonetaryAmount(amount, selectedCurrency);
 
             resultItem = WishItem.builder()
@@ -92,7 +79,6 @@ public class ItemDialogController extends BaseController {
                     .description(descArea.getText())
                     .price(price)
                     .imageUrl(imageUrlField.getText())
-                    // If creating new, reserved is false by default
                     .isReserved(currentId != null && isEditableItemReserved)
                     .build();
 
