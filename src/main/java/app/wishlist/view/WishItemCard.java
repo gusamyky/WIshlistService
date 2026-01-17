@@ -16,9 +16,9 @@ import java.util.function.Consumer;
 public class WishItemCard extends VBox {
 
     public WishItemCard(WishItemViewModel viewModel,
-                        Consumer<WishItemViewModel> onEdit,
-                        Consumer<WishItemViewModel> onDelete,
-                        Consumer<WishItemViewModel> onReserve) {
+            Consumer<WishItemViewModel> onEdit,
+            Consumer<WishItemViewModel> onDelete,
+            Consumer<WishItemViewModel> onReserve) {
 
         // 1. Base Style
         this.setSpacing(10);
@@ -42,6 +42,21 @@ public class WishItemCard extends VBox {
         nameLabel.textProperty().bind(viewModel.nameProperty());
         nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 
+        // --- RESERVED INDICATOR ---
+        Label reservedLabel = new Label("RESERVED");
+        reservedLabel.setStyle(
+                "-fx-text-fill: white; -fx-background-color: #ff4444; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 2 6 2 6; -fx-background-radius: 4;");
+        reservedLabel.setMinWidth(75);
+        reservedLabel.setPrefWidth(75);
+        reservedLabel.setMaxWidth(75);
+        reservedLabel.setAlignment(Pos.CENTER);
+        reservedLabel.visibleProperty().bind(viewModel.isReservedProperty());
+        reservedLabel.managedProperty().bind(viewModel.isReservedProperty()); // Don't take space if hidden
+
+        // Title Row
+        HBox titleRow = new HBox(10, nameLabel, reservedLabel);
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+
         Label priceLabel = new Label();
         priceLabel.textProperty().bind(viewModel.priceTextProperty());
         priceLabel.setStyle("-fx-text-fill: green;");
@@ -62,16 +77,26 @@ public class WishItemCard extends VBox {
 
         // CASE A: Shopping Mode (Reserve Button)
         if (onReserve != null) {
-            ToggleButton reserveBtn = new ToggleButton("Reserve");
+            ToggleButton reserveBtn = new ToggleButton();
             reserveBtn.getStyleClass().add("button-accent");
 
-            // Fix: No binding, manual sync to avoid conflict
-            reserveBtn.setSelected(viewModel.isReservedProperty().get());
+            // Initial State Logic
+            updateReserveButtonState(reserveBtn, viewModel);
 
-            reserveBtn.setOnAction(e -> onReserve.accept(viewModel));
+            reserveBtn.setOnAction(e -> {
+                // If it was disabled, this event technically shouldn't fire via UI, but good to
+                // check
+                if (!reserveBtn.isDisabled()) {
+                    onReserve.accept(viewModel);
+                }
+            });
 
+            // Listen for changes
             viewModel.isReservedProperty().addListener((obs, oldVal, newVal) -> {
-                reserveBtn.setSelected(newVal);
+                updateReserveButtonState(reserveBtn, viewModel);
+            });
+            viewModel.isReservedByCurrentUserProperty().addListener((obs, oldVal, newVal) -> {
+                updateReserveButtonState(reserveBtn, viewModel);
             });
 
             actions.getChildren().add(reserveBtn);
@@ -93,7 +118,7 @@ public class WishItemCard extends VBox {
         }
         // --- BUTTON LOGIC END ---
 
-        this.getChildren().addAll(imageContainer, nameLabel, priceLabel, descLabel, actions);
+        this.getChildren().addAll(imageContainer, titleRow, priceLabel, descLabel, actions);
 
         // 5. Visual State Listener
         viewModel.isReservedProperty().addListener((obs, oldVal, isReserved) -> {
@@ -104,11 +129,38 @@ public class WishItemCard extends VBox {
         updateVisualState(viewModel.isReservedProperty().get());
     }
 
-    private void updateVisualState(boolean isReserved) {
+    private void updateReserveButtonState(ToggleButton btn, WishItemViewModel vm) {
+        boolean isReserved = vm.isReservedProperty().get();
+        boolean isReservedByMe = vm.isReservedByCurrentUserProperty().get();
+
         if (isReserved) {
-            this.setStyle("-fx-background-color: #e0e0e0; -fx-opacity: 0.7; -fx-background-radius: 8; -fx-border-color: #a0a0a0; -fx-border-radius: 8;");
+            if (isReservedByMe) {
+                // Reserved by ME -> Enable "Unreserve"
+                btn.setText("Unreserve");
+                btn.setDisable(false);
+                btn.setSelected(true); // Visually pressed usually means "Active/Reserved"
+            } else {
+                // Reserved by OTHERS -> Disable button
+                btn.setText("Reserved"); // Or "Reserved by other"
+                btn.setDisable(true);
+                btn.setSelected(true);
+            }
         } else {
-            this.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-background-radius: 8;");
+            // Not Reserved -> Enable "Reserve"
+            btn.setText("Reserve");
+            btn.setDisable(false);
+            btn.setSelected(false);
         }
+    }
+
+    private void updateVisualState(boolean isReserved) {
+        // Requested: text says "reserved", but "colors of the whole tile are the same
+        // as unreserved"
+        // So we just keep the default white/shadow style, maybe just ensuring it
+        // doesn't look disabled/gray.
+        // The original code set background to #e0e0e0. We revert that.
+
+        this.setStyle(
+                "-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-background-radius: 8;");
     }
 }
