@@ -125,6 +125,11 @@ public class WishItemCard extends VBox {
             updateVisualState(isReserved);
         });
 
+        // 6. Detailed View Listener
+        this.setOnMouseClicked(event -> {
+            new WishItemDetailsDialog(viewModel).showAndWait();
+        });
+
         // Run once to set initial state
         updateVisualState(viewModel.isReservedProperty().get());
     }
