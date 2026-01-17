@@ -24,7 +24,7 @@ public class WishItemDetailsDialog extends Dialog<Void> {
         content.setPadding(new Insets(20));
         content.setPrefWidth(400);
         content.setPrefHeight(500);
-        content.setStyle("-fx-background-color: white;");
+        content.getStyleClass().add("dialog-content");
 
         // 1. Image (Larger)
         ImageView imageView = new ImageView();
@@ -38,19 +38,18 @@ public class WishItemDetailsDialog extends Dialog<Void> {
         // 2. Name
         Label nameLabel = new Label();
         nameLabel.textProperty().bind(viewModel.nameProperty());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 20px;");
+        nameLabel.getStyleClass().add("wish-details-name");
         nameLabel.setWrapText(true);
 
         // 3. Status & Price Row
         Label reservedLabel = new Label("RESERVED");
-        reservedLabel.setStyle(
-                "-fx-text-fill: white; -fx-background-color: #ff4444; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 4 8 4 8; -fx-background-radius: 4;");
+        reservedLabel.getStyleClass().add("badge-reserved");
         reservedLabel.visibleProperty().bind(viewModel.isReservedProperty());
         reservedLabel.managedProperty().bind(viewModel.isReservedProperty());
 
         Label priceLabel = new Label();
         priceLabel.textProperty().bind(viewModel.priceTextProperty());
-        priceLabel.setStyle("-fx-text-fill: green; -fx-font-size: 16px; -fx-font-weight: bold;");
+        priceLabel.getStyleClass().add("wish-details-price");
 
         HBox metaRow = new HBox(15, priceLabel, reservedLabel);
         metaRow.setAlignment(Pos.CENTER_LEFT);
@@ -61,8 +60,7 @@ public class WishItemDetailsDialog extends Dialog<Void> {
         descArea.setWrapText(true);
         descArea.setEditable(false);
         // Style to match the clean look: white background, black text
-        descArea.setStyle(
-                "-fx-control-inner-background: white; -fx-background-color: white; -fx-text-fill: black; -fx-font-size: 14px;");
+        descArea.getStyleClass().add("text-area-readonly");
 
         VBox.setVgrow(descArea, Priority.ALWAYS);
 

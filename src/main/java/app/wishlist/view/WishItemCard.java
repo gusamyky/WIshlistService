@@ -40,12 +40,11 @@ public class WishItemCard extends VBox {
         // 3. Labels
         Label nameLabel = new Label();
         nameLabel.textProperty().bind(viewModel.nameProperty());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+        nameLabel.getStyleClass().add("wish-card-name");
 
         // --- RESERVED INDICATOR ---
         Label reservedLabel = new Label("RESERVED");
-        reservedLabel.setStyle(
-                "-fx-text-fill: white; -fx-background-color: #ff4444; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 2 6 2 6; -fx-background-radius: 4;");
+        reservedLabel.getStyleClass().add("badge-reserved");
         reservedLabel.setMinWidth(75);
         reservedLabel.setPrefWidth(75);
         reservedLabel.setMaxWidth(75);
@@ -59,7 +58,7 @@ public class WishItemCard extends VBox {
 
         Label priceLabel = new Label();
         priceLabel.textProperty().bind(viewModel.priceTextProperty());
-        priceLabel.setStyle("-fx-text-fill: green;");
+        priceLabel.getStyleClass().add("wish-card-price");
 
         Label descLabel = new Label();
         descLabel.setWrapText(true);
@@ -165,7 +164,6 @@ public class WishItemCard extends VBox {
         // doesn't look disabled/gray.
         // The original code set background to #e0e0e0. We revert that.
 
-        this.setStyle(
-                "-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-background-radius: 8;");
+        this.getStyleClass().add("wish-card");
     }
 }

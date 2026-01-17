@@ -78,7 +78,8 @@ public class FeedbackController extends BaseController {
 
     private void saveReportToEventFile(SecretSantaEvent event, ReportInterface report) {
         File dir = new File("reports");
-        if (!dir.exists()) dir.mkdirs();
+        if (!dir.exists())
+            dir.mkdirs();
 
         // One file per event
         String filename = "event_" + event.getId() + "_report.txt";
