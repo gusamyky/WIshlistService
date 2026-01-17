@@ -15,8 +15,6 @@ public class WishItem {
     private String description;
     private MonetaryAmount price;
     private String imageUrl;
-
-    // Reservation Logic
     private boolean isReserved;
-    private String reservedByUserLogin; // The login of the Santa who bought it
+    private String reservedByUserLogin;
 }

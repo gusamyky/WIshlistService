@@ -96,7 +96,22 @@ public class WishlistController extends BaseController {
                         null // No Reserve action for owner
                 ));
             } else {
+                boolean isReserved = viewModel.isReservedProperty().get();
+                boolean isReservedByCurrentUser = isReserved &&
+                        dataService.getLoggedInUser().getLogin().equals(item.getReservedByUserLogin());
                 // SHOPPING MODE: NO Edit/Delete, YES Reserve
+                if (isReservedByCurrentUser) {
+                    // Item reserved by current user
+                    itemsContainer.getChildren().add(new WishItemCard(
+                            viewModel,
+                            null,
+                            null,
+                            this::handleReserveItem
+                    ));
+                    continue;
+                }
+
+                // Item is either unreserved or reserved by current user
                 itemsContainer.getChildren().add(new WishItemCard(
                         viewModel,
                         null,
@@ -139,6 +154,7 @@ public class WishlistController extends BaseController {
     }
 
     private void handleReserveItem(WishItemViewModel viewModel) {
+
         viewModel.toggleReservation(dataService.getLoggedInUser().getLogin());
 
         dataService.updateWishItem(viewModel.getModel());

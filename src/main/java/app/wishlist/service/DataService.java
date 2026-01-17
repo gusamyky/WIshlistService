@@ -39,6 +39,7 @@ public class DataService {
         this.gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
+                .serializeNulls()
                 .registerTypeAdapter(User.class, userDeserializer) // Register the adapter
                 .create();
 

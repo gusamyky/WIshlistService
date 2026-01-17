@@ -7,13 +7,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class MainLayoutController extends BaseController {
 
     private final DataService dataService = DataService.getInstance();
+    @FXML
+    public ImageView userAvatar;
     @FXML
     private Label userNameLabel;
     @FXML
@@ -23,15 +28,19 @@ public class MainLayoutController extends BaseController {
 
     @FXML
     public void initialize() {
+        // Trigger re-compilation
         User currentUser = dataService.getLoggedInUser();
+
+        Image userAvatarImage = new Image(
+                Objects.requireNonNull(getClass().getResourceAsStream("/images/user_avatar.png")));
 
         if (currentUser != null) {
             userNameLabel.setText(currentUser.getFullName());
+            userAvatar.setImage(userAvatarImage);
         }
 
         navToWishlist();
     }
-
 
     @FXML
     private void navToWishlist() {
