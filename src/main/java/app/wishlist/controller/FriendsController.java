@@ -96,7 +96,7 @@ public class FriendsController extends BaseController {
 
                 // User Info
                 Label nameLabel = new Label(user.getFullName() + " (@" + user.getLogin() + ")");
-                nameLabel.setStyle("-fx-font-weight: bold;");
+                nameLabel.getStyleClass().add("friend-name");
 
                 // Spacer
                 Region spacer = new Region();
@@ -109,8 +109,7 @@ public class FriendsController extends BaseController {
 
                 if (isFriend) {
                     actionBtn.setText("Remove");
-                    actionBtn.getStyleClass().add("button-danger");
-                    actionBtn.setStyle("-fx-background-color: #ffcccc; -fx-text-fill: red;");
+                    actionBtn.getStyleClass().addAll("button-danger", "button-remove-friend");
                     actionBtn.setOnAction(e -> {
                         dataService.removeFriend(me, user.getLogin());
                         // Refresh logic based on current view

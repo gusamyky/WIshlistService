@@ -14,7 +14,7 @@ public class SecretSantaEvent {
     private String id;
     private String name;
     private String ownerLogin; // The "Admin" of this specific event
-    private String eventDate;  // Stored as String for JSON simplicity
+    private String eventDate;
     private boolean isDrawDone;
 
     private List<String> participantLogins = new ArrayList<>();
