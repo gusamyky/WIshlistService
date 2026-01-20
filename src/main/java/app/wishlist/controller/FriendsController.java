@@ -1,7 +1,7 @@
 package app.wishlist.controller;
 
-import app.wishlist.model.User;
-import app.wishlist.service.DataService;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.service.impl.DataServiceImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class FriendsController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
     private TextField searchField;
     @FXML

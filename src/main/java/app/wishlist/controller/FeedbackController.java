@@ -1,11 +1,11 @@
 package app.wishlist.controller;
 
-import app.wishlist.model.ReportInterface;
-import app.wishlist.model.SecretSantaEvent;
-import app.wishlist.model.SecretSantaSatisfactionQuestionnaire;
-import app.wishlist.model.User;
-import app.wishlist.service.DataService;
-import app.wishlist.service.SecretSantaService;
+import app.wishlist.model.domain.event.SecretSantaEvent;
+import app.wishlist.model.domain.event.SecretSantaSatisfactionQuestionnaire;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.model.report.ReportInterface;
+import app.wishlist.service.impl.DataServiceImpl;
+import app.wishlist.service.impl.SecretSantaServiceImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -20,8 +20,8 @@ import java.io.IOException;
 
 public class FeedbackController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
-    private final SecretSantaService eventService = SecretSantaService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
+    private final SecretSantaServiceImpl eventService = SecretSantaServiceImpl.getInstance();
     @FXML
     private ComboBox<SecretSantaEvent> eventComboBox;
     @FXML

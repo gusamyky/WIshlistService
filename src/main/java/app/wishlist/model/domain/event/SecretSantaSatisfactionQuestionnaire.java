@@ -1,18 +1,18 @@
-package app.wishlist.model;
+package app.wishlist.model.domain.event;
 
+import app.wishlist.model.domain.user.User;
+import app.wishlist.model.report.ReportInterface;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class SecretSantaSatisfactionQuestionnaire implements ReportInterface {
 
     private final User user;
-    private int rating; // 1 to 5
+    private int rating;
     private String comments;
     private boolean wouldParticipateAgain;
-
-    public SecretSantaSatisfactionQuestionnaire(User user, int rating, String comments, boolean again) {
-        this.user = user;
-        this.rating = rating;
-        this.comments = comments;
-        this.wouldParticipateAgain = again;
-    }
 
     @Override
     public String getReportTitle() {
@@ -32,8 +32,7 @@ public class SecretSantaSatisfactionQuestionnaire implements ReportInterface {
                 user.getFullName(), user.getLogin(),
                 rating,
                 wouldParticipateAgain ? "YES" : "NO",
-                comments
-        );
+                comments);
     }
 
     @Override

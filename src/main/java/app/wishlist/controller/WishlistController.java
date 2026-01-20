@@ -1,10 +1,10 @@
 package app.wishlist.controller;
 
 import app.wishlist.consts.AppRoutes;
-import app.wishlist.model.User;
-import app.wishlist.model.WishItem;
-import app.wishlist.service.DataService;
-import app.wishlist.view.WishItemCard;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.model.domain.wishlist.WishItem;
+import app.wishlist.service.impl.DataServiceImpl;
+import app.wishlist.view.components.WishItemCard;
 import app.wishlist.viewmodel.WishItemViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public class WishlistController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
     private Label pageTitle;
     @FXML
@@ -106,8 +106,7 @@ public class WishlistController extends BaseController {
                             viewModel,
                             null,
                             null,
-                            this::handleReserveItem
-                    ));
+                            this::handleReserveItem));
                     continue;
                 }
 
@@ -116,8 +115,7 @@ public class WishlistController extends BaseController {
                         viewModel,
                         null,
                         null,
-                        this::handleReserveItem
-                ));
+                        this::handleReserveItem));
             }
         }
     }

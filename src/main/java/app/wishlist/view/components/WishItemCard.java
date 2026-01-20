@@ -1,4 +1,4 @@
-package app.wishlist.view;
+package app.wishlist.view.components;
 
 import app.wishlist.viewmodel.WishItemViewModel;
 import javafx.geometry.Insets;
@@ -16,9 +16,9 @@ import java.util.function.Consumer;
 public class WishItemCard extends VBox {
 
     public WishItemCard(WishItemViewModel viewModel,
-            Consumer<WishItemViewModel> onEdit,
-            Consumer<WishItemViewModel> onDelete,
-            Consumer<WishItemViewModel> onReserve) {
+                        Consumer<WishItemViewModel> onEdit,
+                        Consumer<WishItemViewModel> onDelete,
+                        Consumer<WishItemViewModel> onReserve) {
 
         // 1. Base Style
         this.setSpacing(10);
@@ -145,7 +145,7 @@ public class WishItemCard extends VBox {
                 btn.setSelected(true); // Visually pressed usually means "Active/Reserved"
             } else {
                 // Reserved by OTHERS -> Disable button
-                btn.setText("Reserved"); // Or "Reserved by other"
+                btn.setText("Reserved"); // Or "Reserved by others"
                 btn.setDisable(true);
                 btn.setSelected(true);
             }
@@ -158,12 +158,6 @@ public class WishItemCard extends VBox {
     }
 
     private void updateVisualState(boolean isReserved) {
-        // Requested: text says "reserved", but "colors of the whole tile are the same
-        // as unreserved"
-        // So we just keep the default white/shadow style, maybe just ensuring it
-        // doesn't look disabled/gray.
-        // The original code set background to #e0e0e0. We revert that.
-
         this.getStyleClass().add("wish-card");
     }
 }

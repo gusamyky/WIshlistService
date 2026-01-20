@@ -1,7 +1,7 @@
 package app.wishlist.viewmodel;
 
-import app.wishlist.model.WishItem;
-import app.wishlist.service.DataService;
+import app.wishlist.model.domain.wishlist.WishItem;
+import app.wishlist.service.impl.DataServiceImpl;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class WishItemViewModel {
     public WishItemViewModel(WishItem item) {
         this.model = item;
         // This should be set from the context where the ViewModel is used
-        String currentUserLogin = DataService.getInstance().getLoggedInUser().getLogin();
+        String currentUserLogin = DataServiceImpl.getInstance().getLoggedInUser().getLogin();
 
         boolean isReservedByLoggedInUser = false;
         if (item.getReservedByUserLogin() != null) {

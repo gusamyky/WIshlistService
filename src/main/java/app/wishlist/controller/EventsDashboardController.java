@@ -1,9 +1,9 @@
 package app.wishlist.controller;
 
-import app.wishlist.model.SecretSantaEvent;
-import app.wishlist.model.User;
-import app.wishlist.service.DataService;
-import app.wishlist.service.SecretSantaService;
+import app.wishlist.model.domain.event.SecretSantaEvent;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.service.impl.DataServiceImpl;
+import app.wishlist.service.impl.SecretSantaServiceImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
@@ -13,8 +13,8 @@ import lombok.Setter;
 
 public class EventsDashboardController extends BaseController {
 
-    private final SecretSantaService eventService = SecretSantaService.getInstance();
-    private final DataService dataService = DataService.getInstance();
+    private final SecretSantaServiceImpl eventService = SecretSantaServiceImpl.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
     private TextField eventNameField;
     @FXML

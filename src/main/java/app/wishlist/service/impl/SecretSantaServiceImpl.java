@@ -1,8 +1,9 @@
-package app.wishlist.service;
+package app.wishlist.service.impl;
 
-import app.wishlist.model.SecretSantaEvent;
-import app.wishlist.model.SecretSantaUsersPair;
-import app.wishlist.model.User;
+import app.wishlist.model.domain.event.SecretSantaEvent;
+import app.wishlist.model.domain.event.SecretSantaUsersPair;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.service.interfaces.ISecretSantaService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -14,20 +15,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SecretSantaService {
+public class SecretSantaServiceImpl implements ISecretSantaService {
 
-    private static final SecretSantaService INSTANCE = new SecretSantaService();
+    private static final SecretSantaServiceImpl INSTANCE = new SecretSantaServiceImpl();
     private static final String EVENTS_FILE = "events_data.json";
     private final Gson gson;
 
     private List<SecretSantaEvent> events = new ArrayList<>();
 
-    private SecretSantaService() {
+    private SecretSantaServiceImpl() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         loadEvents();
     }
 
-    public static SecretSantaService getInstance() {
+    public static SecretSantaServiceImpl getInstance() {
         return INSTANCE;
     }
 
@@ -40,19 +41,18 @@ public class SecretSantaService {
         return event;
     }
 
-    public List<SecretSantaEvent> getAllEvents() {
-        return events;
-    }
 
     // Get events created by me OR where I am a participant
     public List<SecretSantaEvent> getMyEvents(User user) {
-        if (user == null) return new ArrayList<>();
+        if (user == null)
+            return new ArrayList<>();
         // If I am a System Admin (AdminUser), I see EVERYTHING
         if (user.isAdmin()) {
             return events;
         }
         return events.stream()
-                .filter(e -> e.getOwnerLogin().equals(user.getLogin()) || e.getParticipantLogins().contains(user.getLogin()))
+                .filter(e -> e.getOwnerLogin().equals(user.getLogin())
+                        || e.getParticipantLogins().contains(user.getLogin()))
                 .collect(Collectors.toList());
     }
 
@@ -80,13 +80,14 @@ public class SecretSantaService {
 
         Collections.shuffle(participants);
         event.getDrawResults().clear();
-        DataService data = DataService.getInstance();
+        DataServiceImpl data = DataServiceImpl.getInstance();
 
         for (int i = 0; i < participants.size(); i++) {
             String santaLogin = participants.get(i);
             String targetLogin = participants.get((i + 1) % participants.size());
 
-            // We need full User objects for the Pair class (kept for backward compatibility with your View)
+            // We need full User objects for the Pair class (kept for backward compatibility
+            // with your View)
             User santa = data.getUserByLogin(santaLogin);
             User target = data.getUserByLogin(targetLogin);
 
@@ -101,7 +102,7 @@ public class SecretSantaService {
 
     // --- Persistence ---
 
-    private void saveEvents() {
+    public void saveEvents() {
         try (Writer writer = new FileWriter(EVENTS_FILE)) {
             gson.toJson(events, writer);
         } catch (IOException e) {
@@ -111,20 +112,23 @@ public class SecretSantaService {
 
     private void loadEvents() {
         File file = new File(EVENTS_FILE);
-        if (!file.exists()) return;
+        if (!file.exists())
+            return;
 
         try (Reader reader = new FileReader(EVENTS_FILE)) {
             Type type = new TypeToken<ArrayList<SecretSantaEvent>>() {
             }.getType();
             List<SecretSantaEvent> loaded = gson.fromJson(reader, type);
-            if (loaded != null) this.events = loaded;
+            if (loaded != null)
+                this.events = loaded;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public User getRecipientFor(SecretSantaEvent event, User santa) {
-        if (event == null || !event.isDrawDone()) return null;
+        if (event == null || !event.isDrawDone())
+            return null;
 
         return event.getDrawResults().stream()
                 .filter(pair -> pair.getSanta().getLogin().equals(santa.getLogin()))

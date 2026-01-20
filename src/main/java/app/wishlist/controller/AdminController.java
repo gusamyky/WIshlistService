@@ -1,9 +1,9 @@
 package app.wishlist.controller;
 
-import app.wishlist.model.SecretSantaEvent;
-import app.wishlist.model.User;
-import app.wishlist.service.DataService;
-import app.wishlist.service.SecretSantaService;
+import app.wishlist.model.domain.event.SecretSantaEvent;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.service.impl.DataServiceImpl;
+import app.wishlist.service.impl.SecretSantaServiceImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,8 +15,8 @@ import java.nio.file.Files;
 
 public class AdminController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
-    private final SecretSantaService secretSantaService = SecretSantaService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
+    private final SecretSantaServiceImpl secretSantaService = SecretSantaServiceImpl.getInstance();
     private final ObservableList<User> availableUsers = FXCollections.observableArrayList();
     private final ObservableList<User> selectedUsers = FXCollections.observableArrayList();
     @FXML

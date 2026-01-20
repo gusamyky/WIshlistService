@@ -1,8 +1,9 @@
 package app.wishlist.controller;
 
 import app.wishlist.consts.AppRoutes;
-import app.wishlist.model.User;
-import app.wishlist.service.DataService;
+import app.wishlist.model.domain.event.SecretSantaEvent;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.service.impl.DataServiceImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +17,7 @@ import java.util.Objects;
 
 public class MainLayoutController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
     public ImageView userAvatar;
     @FXML
@@ -68,7 +69,7 @@ public class MainLayoutController extends BaseController {
         loadView(AppRoutes.EVENTS_DASHBOARD);
     }
 
-    public void navToEventDetails(app.wishlist.model.SecretSantaEvent event) {
+    public void navToEventDetails(SecretSantaEvent event) {
         User me = dataService.getLoggedInUser();
 
         boolean canManage = me.isAdmin() || event.getOwnerLogin().equals(me.getLogin());
