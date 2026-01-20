@@ -13,6 +13,7 @@ import java.io.IOException;
 public class ViewSwitcher {
     @Getter
     private static Scene scene;
+    @Getter
     private static Pane root;
 
     public static void setScene(Scene scene) {
