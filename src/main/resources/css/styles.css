@@ -129,7 +129,6 @@
 .wish-card {
     background-color: white;
     -fx-background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
     border-radius: 8px;
     -fx-background-radius: 8;
