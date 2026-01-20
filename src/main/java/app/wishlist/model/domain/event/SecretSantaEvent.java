@@ -1,4 +1,4 @@
-package app.wishlist.model;
+package app.wishlist.model.domain.event;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

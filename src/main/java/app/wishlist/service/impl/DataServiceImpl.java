@@ -1,8 +1,10 @@
-package app.wishlist.service;
+package app.wishlist.service.impl;
 
-import app.wishlist.model.AdminUser;
-import app.wishlist.model.User;
-import app.wishlist.model.WishItem;
+import app.wishlist.model.domain.user.AdminUser;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.model.domain.wishlist.WishItem;
+import app.wishlist.service.interfaces.IDataService;
+import app.wishlist.service.interfaces.IPasswordService;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.beans.property.ObjectProperty;
@@ -12,19 +14,21 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class DataService {
+public class DataServiceImpl implements IDataService {
 
-    private static final DataService INSTANCE = new DataService();
+    private static final DataServiceImpl INSTANCE = new DataServiceImpl();
     private static final String DATA_FILE = "wishlist_data.json";
     private final Gson gson;
     private final ObjectProperty<User> loggedInUser = new SimpleObjectProperty<>();
+    private final IPasswordService passwordService = PasswordHashingServiceImpl.getInstance();
     private List<User> users = new ArrayList<>();
     private Map<String, List<WishItem>> wishlists = new HashMap<>();
 
-    private DataService() {
+    private DataServiceImpl() {
         JsonDeserializer<User> userDeserializer = new JsonDeserializer<User>() {
             @Override
-            public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                    throws JsonParseException {
                 JsonObject jsonObject = json.getAsJsonObject();
                 String type = jsonObject.has("type") ? jsonObject.get("type").getAsString() : "USER";
 
@@ -40,13 +44,13 @@ public class DataService {
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .serializeNulls()
-                .registerTypeAdapter(User.class, userDeserializer) // Register the adapter
+                .registerTypeAdapter(User.class, userDeserializer)
                 .create();
 
         loadData();
     }
 
-    public static DataService getInstance() {
+    public static DataServiceImpl getInstance() {
         return INSTANCE;
     }
 
@@ -56,7 +60,8 @@ public class DataService {
                 .findFirst()
                 .orElse(null);
 
-        if (user == null) return false;
+        if (user == null)
+            return false;
 
         String storedValue = user.getPassword();
 
@@ -72,7 +77,7 @@ public class DataService {
 
         byte[] originalSalt = Base64.getDecoder().decode(storedSaltString);
 
-        String newHash = PasswordHashingService.hashPassword(inputPassword, originalSalt);
+        String newHash = passwordService.hashPassword(inputPassword, originalSalt);
 
         return newHash.equals(storedHash);
     }
@@ -102,11 +107,12 @@ public class DataService {
 
     public boolean registerUser(String login, String password, String firstName, String lastName, boolean isAdmin) {
         boolean exists = users.stream().anyMatch(u -> u.getLogin().equalsIgnoreCase(login));
-        if (exists) return false;
+        if (exists)
+            return false;
 
-        byte[] salt = PasswordHashingService.getSalt();
+        byte[] salt = passwordService.getSalt();
 
-        String hash = PasswordHashingService.hashPassword(password, salt);
+        String hash = passwordService.hashPassword(password, salt);
 
         String saltString = Base64.getEncoder().encodeToString(salt);
         String storedPassword = saltString + ":" + hash;
@@ -125,7 +131,8 @@ public class DataService {
     // --- Friends Logic ---
 
     public void addFriend(User me, String friendLogin) {
-        if (me == null || friendLogin == null) return;
+        if (me == null || friendLogin == null)
+            return;
 
         me.getFriends().add(friendLogin);
 
@@ -133,7 +140,8 @@ public class DataService {
     }
 
     public void removeFriend(User me, String friendLogin) {
-        if (me == null || friendLogin == null) return;
+        if (me == null || friendLogin == null)
+            return;
 
         me.getFriends().remove(friendLogin);
 
@@ -141,7 +149,8 @@ public class DataService {
     }
 
     public boolean isFriend(User me, String otherLogin) {
-        if (me == null) return false;
+        if (me == null)
+            return false;
 
         return me.getFriends().contains(otherLogin);
     }
@@ -153,15 +162,18 @@ public class DataService {
     }
 
     public List<WishItem> getCurrentUserWishlist() {
-        if (getLoggedInUser() == null) return new ArrayList<>();
+        if (getLoggedInUser() == null)
+            return new ArrayList<>();
 
         return getWishlistForUser(getLoggedInUser());
     }
 
     public void addWishItem(WishItem item) {
-        if (getLoggedInUser() == null) return;
+        if (getLoggedInUser() == null)
+            return;
 
-        if (item.getId() == null) item.setId(UUID.randomUUID().toString());
+        if (item.getId() == null)
+            item.setId(UUID.randomUUID().toString());
 
         getWishlistForUser(getLoggedInUser()).add(item);
 
@@ -169,7 +181,8 @@ public class DataService {
     }
 
     public void removeWishItem(WishItem item) {
-        if (getLoggedInUser() == null) return;
+        if (getLoggedInUser() == null)
+            return;
 
         getWishlistForUser(getLoggedInUser()).removeIf(i -> i.getId().equals(item.getId()));
 
@@ -193,7 +206,7 @@ public class DataService {
 
     // --- Persistence Logic ---
 
-    private void saveData() {
+    public void saveData() {
         try (Writer writer = new FileWriter(DATA_FILE)) {
             DataWrapper wrapper = new DataWrapper();
             wrapper.users = this.users;

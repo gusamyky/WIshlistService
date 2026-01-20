@@ -1,7 +1,7 @@
 package app.wishlist.controller;
 
-import app.wishlist.model.MonetaryAmount;
-import app.wishlist.model.WishItem;
+import app.wishlist.model.domain.wishlist.WishItem;
+import app.wishlist.model.valueobject.MonetaryAmount;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;

@@ -1,14 +1,14 @@
 package app.wishlist.controller;
 
 import app.wishlist.consts.AppRoutes;
-import app.wishlist.service.DataService;
+import app.wishlist.service.impl.DataServiceImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class RegisterController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
     private TextField loginField;
     @FXML

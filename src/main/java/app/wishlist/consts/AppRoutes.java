@@ -1,6 +1,9 @@
 package app.wishlist.consts;
 
+import lombok.experimental.UtilityClass;
+
 /// Contains paths to all FXML views used in the application.
+@UtilityClass
 public class AppRoutes {
     public static final String ADMIN = "/fxml/admin-view.fxml";
     public static final String EVENTS_DASHBOARD = "/fxml/events-dashboard.fxml";

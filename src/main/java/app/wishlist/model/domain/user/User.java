@@ -1,4 +1,4 @@
-package app.wishlist.model;
+package app.wishlist.model.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +28,8 @@ public class User {
     }
 
     public Set<String> getFriends() {
-        if (friends == null) friends = new HashSet<>();
+        if (friends == null)
+            friends = new HashSet<>();
         return friends;
     }
 
@@ -36,7 +37,6 @@ public class User {
         return firstName + " " + lastName;
     }
 
-    // Polymorphic method example
     public boolean isAdmin() {
         return this.type.equals("ADMIN");
     }

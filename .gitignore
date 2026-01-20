@@ -41,3 +41,6 @@ build/
 /reports
 wishlist_data.json
 events_data.json
+
+### Ignore local misc files ###
+/local_misc

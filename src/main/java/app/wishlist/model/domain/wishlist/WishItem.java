@@ -1,5 +1,6 @@
-package app.wishlist.model;
+package app.wishlist.model.domain.wishlist;
 
+import app.wishlist.model.valueobject.MonetaryAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

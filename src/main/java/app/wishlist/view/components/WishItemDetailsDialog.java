@@ -1,4 +1,4 @@
-package app.wishlist.view;
+package app.wishlist.view.components;
 
 import app.wishlist.viewmodel.WishItemViewModel;
 import javafx.geometry.Insets;
@@ -68,9 +68,5 @@ public class WishItemDetailsDialog extends Dialog<Void> {
         content.getChildren().addAll(imageContainer, nameLabel, metaRow, descArea);
 
         dialogPane.setContent(content);
-
-        // Optional: Apply CSS stylesheet if available, or just rely on inline for now
-        // as per other views
-        // dialogPane.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
     }
 }

@@ -1,9 +1,9 @@
 package app.wishlist.controller;
 
-import app.wishlist.model.SecretSantaEvent;
-import app.wishlist.model.User;
-import app.wishlist.service.DataService;
-import app.wishlist.service.SecretSantaService;
+import app.wishlist.model.domain.event.SecretSantaEvent;
+import app.wishlist.model.domain.user.User;
+import app.wishlist.service.impl.DataServiceImpl;
+import app.wishlist.service.impl.SecretSantaServiceImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -11,8 +11,8 @@ import lombok.Setter;
 
 public class RevealController extends BaseController {
 
-    private final DataService dataService = DataService.getInstance();
-    private final SecretSantaService santaService = SecretSantaService.getInstance();
+    private final DataServiceImpl dataService = DataServiceImpl.getInstance();
+    private final SecretSantaServiceImpl santaService = SecretSantaServiceImpl.getInstance();
     @FXML
     private VBox waitingBox;
     @FXML

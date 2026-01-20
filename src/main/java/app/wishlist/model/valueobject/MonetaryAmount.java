@@ -1,4 +1,4 @@
-package app.wishlist.model;
+package app.wishlist.model.valueobject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
