@@ -2,9 +2,11 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20"
-      style="-fx-padding: 30; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
-      fx:controller="app.wishlist.controller.AdminController">
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+            fx:controller="app.wishlist.controller.AdminController"
+            fitToWidth="true" style="-fx-background-color: white;">
+    
+<VBox spacing="20" style="-fx-padding: 30; -fx-background-color: white;">
 
     <Label text="Secret Santa Admin Hub" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
     <Label text="Configure the event and perform the draw." textFill="gray"/>
@@ -18,7 +20,7 @@
 
     <Label text="Select Participants" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
 
-    <HBox spacing="10" VBox.vgrow="ALWAYS">
+    <HBox spacing="10" prefHeight="300">
         <VBox spacing="5" HBox.hgrow="ALWAYS">
             <Label text="Available Users"/>
             <ListView fx:id="availableList" VBox.vgrow="ALWAYS"/>
@@ -44,4 +46,20 @@
     <Button text="📂 Load &amp; Analyze Reports" onAction="#handleViewReports"
             maxWidth="Infinity" style="-fx-font-size: 14px;"/>
 
+    <Separator/>
+
+    <VBox fx:id="myRecipientBox" spacing="15" alignment="CENTER" visible="false"
+          style="-fx-padding: 20; -fx-background-color: #f9f9f9; -fx-background-radius: 8;">
+        <Label text="Your Secret Santa Recipient:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        
+        <Label fx:id="myRecipientNameLabel" text="[NAME]"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #d32f2f;"/>
+        
+        <Button text="View Their Wishlist" onAction="#handleViewMyRecipientWishlist"
+                styleClass="button-success" style="-fx-font-size: 14px; -fx-padding: 8 16;"/>
+    </VBox>
+
 </VBox>
+
+</ScrollPane>
+

@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import java.io.File;
@@ -25,7 +26,13 @@ public class AdminController extends BaseController {
     private ListView<User> availableList;
     @FXML
     private ListView<User> selectedList;
+    @FXML
+    private VBox myRecipientBox;
+    @FXML
+    private Label myRecipientNameLabel;
     private SecretSantaEvent currentEvent;
+    private User myRecipient;
+    private MainLayoutController mainLayoutController;
 
     @FXML
     public void initialize() {
@@ -43,12 +50,17 @@ public class AdminController extends BaseController {
         selectedList.setItems(selectedUsers);
     }
 
+    public void setMainLayoutController(MainLayoutController controller) {
+        this.mainLayoutController = controller;
+    }
+
     public void setEvent(SecretSantaEvent event) {
         this.currentEvent = event;
         if (event.getLocalDate() != null) {
             datePicker.setValue(event.getLocalDate());
         }
         refreshLists();
+        loadMyRecipient();
     }
 
     private void refreshLists() {
@@ -106,6 +118,9 @@ public class AdminController extends BaseController {
 
         secretSantaService.performDraw(currentEvent);
 
+        // Refresh the recipient display now that the draw is complete
+        loadMyRecipient();
+
         showAlert("Draw Complete", "The event has been updated. Pairs Assigned!");
     }
 
@@ -141,6 +156,30 @@ public class AdminController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             showError("Error reading report file.");
+        }
+    }
+
+    private void loadMyRecipient() {
+        if (currentEvent == null || !currentEvent.isDrawDone()) {
+            myRecipientBox.setVisible(false);
+            return;
+        }
+
+        User me = dataService.getLoggedInUser();
+        myRecipient = secretSantaService.getRecipientFor(currentEvent, me);
+
+        if (myRecipient != null) {
+            myRecipientBox.setVisible(true);
+            myRecipientNameLabel.setText(myRecipient.getFullName());
+        } else {
+            myRecipientBox.setVisible(false);
+        }
+    }
+
+    @FXML
+    private void handleViewMyRecipientWishlist() {
+        if (mainLayoutController != null && myRecipient != null) {
+            mainLayoutController.navToFriendWishlist(myRecipient);
         }
     }
 }

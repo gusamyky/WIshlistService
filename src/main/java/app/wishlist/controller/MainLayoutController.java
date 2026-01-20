@@ -81,6 +81,7 @@ public class MainLayoutController extends BaseController {
 
             if (canManage) {
                 AdminController controller = loader.getController();
+                controller.setMainLayoutController(this);
                 controller.setEvent(event);
             } else {
                 RevealController controller = loader.getController();
