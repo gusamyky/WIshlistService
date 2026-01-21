@@ -161,13 +161,6 @@ public class DataServiceImpl implements IDataService {
         return wishlists.computeIfAbsent(user.getLogin(), k -> new ArrayList<>());
     }
 
-    public List<WishItem> getCurrentUserWishlist() {
-        if (getLoggedInUser() == null)
-            return new ArrayList<>();
-
-        return getWishlistForUser(getLoggedInUser());
-    }
-
     public void addWishItem(WishItem item) {
         if (getLoggedInUser() == null)
             return;

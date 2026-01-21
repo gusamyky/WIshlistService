@@ -54,12 +54,11 @@ public class WishItemDetailsDialog extends Dialog<Void> {
         HBox metaRow = new HBox(15, priceLabel, reservedLabel);
         metaRow.setAlignment(Pos.CENTER_LEFT);
 
-        // 4. Description (TextArea for copy support)
+        // 4. Description
         TextArea descArea = new TextArea();
         descArea.textProperty().bind(viewModel.descriptionProperty());
         descArea.setWrapText(true);
         descArea.setEditable(false);
-        // Style to match the clean look: white background, black text
         descArea.getStyleClass().add("text-area-readonly");
 
         VBox.setVgrow(descArea, Priority.ALWAYS);

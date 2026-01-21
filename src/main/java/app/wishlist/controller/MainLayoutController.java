@@ -27,11 +27,10 @@ public class MainLayoutController extends BaseController {
 
     private String currentView = "";
     private String previousView = "";
-    private SecretSantaEvent currentEvent = null; // Track the current event for Reveal/Admin views
+    private SecretSantaEvent currentEvent = null;
 
     @FXML
     public void initialize() {
-        // Trigger re-compilation
         User currentUser = dataService.getLoggedInUser();
 
         Image userAvatarImage = new Image(
@@ -62,14 +61,12 @@ public class MainLayoutController extends BaseController {
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
-            // Save the current view before navigating to friend's wishlist
-            // Check if we're coming from Reveal or Admin view
             if (AppRoutes.REVEAL.equals(currentView) || AppRoutes.ADMIN.equals(currentView)) {
                 previousView = currentView;
             } else {
                 previousView = currentView.isEmpty() ? AppRoutes.FRIENDS : currentView;
             }
-            currentView = "/fxml/wishlist-view.fxml"; // Track that we're now in friend's wishlist
+            currentView = "/fxml/wishlist-view.fxml";
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,10 +100,9 @@ public class MainLayoutController extends BaseController {
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
-            // Save previous view (events dashboard) for back navigation
             previousView = AppRoutes.EVENTS_DASHBOARD;
-            currentView = fxml; // Track that we're now in Admin or Reveal view
-            currentEvent = event; // Remember the event for potential back navigation
+            currentView = fxml;
+            currentEvent = event;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,7 +119,6 @@ public class MainLayoutController extends BaseController {
 
     public void navToPreviousView() {
         if (!previousView.isEmpty()) {
-            // Special handling for Reveal/Admin views - need to restore event data
             if ((AppRoutes.REVEAL.equals(previousView) || AppRoutes.ADMIN.equals(previousView))
                     && currentEvent != null) {
                 navToEventDetails(currentEvent);

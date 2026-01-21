@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import lombok.Setter;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -33,6 +34,7 @@ public class AdminController extends BaseController implements BackNavigable {
     private Label myRecipientNameLabel;
     private SecretSantaEvent currentEvent;
     private User myRecipient;
+    @Setter
     private MainLayoutController mainLayoutController;
 
     @FXML
@@ -49,10 +51,6 @@ public class AdminController extends BaseController implements BackNavigable {
 
         availableList.setItems(availableUsers);
         selectedList.setItems(selectedUsers);
-    }
-
-    public void setMainLayoutController(MainLayoutController controller) {
-        this.mainLayoutController = controller;
     }
 
     public void setEvent(SecretSantaEvent event) {
@@ -118,8 +116,7 @@ public class AdminController extends BaseController implements BackNavigable {
         }
 
         secretSantaService.performDraw(currentEvent);
-
-        // Refresh the recipient display now that the draw is complete
+        
         loadMyRecipient();
 
         showAlert("Draw Complete", "The event has been updated. Pairs Assigned!");

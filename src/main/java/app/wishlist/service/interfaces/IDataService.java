@@ -36,9 +36,7 @@ public interface IDataService {
 
     // Wishlist Operations
     List<WishItem> getWishlistForUser(User user);
-
-    List<WishItem> getCurrentUserWishlist();
-
+    
     void addWishItem(WishItem item);
 
     void removeWishItem(WishItem item);

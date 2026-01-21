@@ -23,9 +23,7 @@ public class ViewSwitcher {
     public static void setRoot(Pane root) {
         ViewSwitcher.root = root;
     }
-
-    // Navigation
-
+    
     public static void switchTo(String fxmlPath) {
         try {
             Parent view;

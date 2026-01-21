@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,6 +38,7 @@ public class WishlistController extends BaseController implements BackNavigable 
     @FXML
     private Button backButton;
     private User targetUser;
+    @Setter
     private MainLayoutController mainLayoutController;
 
     @FXML
@@ -51,10 +53,6 @@ public class WishlistController extends BaseController implements BackNavigable 
     public void setup(User user) {
         this.targetUser = user;
         refreshView();
-    }
-
-    public void setMainLayoutController(MainLayoutController controller) {
-        this.mainLayoutController = controller;
     }
 
     private void refreshView() {
@@ -90,8 +88,8 @@ public class WishlistController extends BaseController implements BackNavigable 
     }
 
     private boolean isCurrentUserOwner() {
-        if (targetUser == null || dataService.getLoggedInUser() == null)
-            return false;
+        if (targetUser == null || dataService.getLoggedInUser() == null) return false;
+
         return targetUser.getLogin().equals(dataService.getLoggedInUser().getLogin());
     }
 
@@ -109,7 +107,7 @@ public class WishlistController extends BaseController implements BackNavigable 
                         viewModel,
                         this::handleEditItem,
                         this::handleDeleteItem,
-                        null // No Reserve action for owner
+                        null
                 ));
             } else {
                 boolean isReserved = viewModel.isReservedProperty().get();
@@ -117,7 +115,6 @@ public class WishlistController extends BaseController implements BackNavigable 
                         dataService.getLoggedInUser().getLogin().equals(item.getReservedByUserLogin());
                 // SHOPPING MODE: NO Edit/Delete, YES Reserve
                 if (isReservedByCurrentUser) {
-                    // Item reserved by current user
                     itemsContainer.getChildren().add(new WishItemCard(
                             viewModel,
                             null,
@@ -126,7 +123,6 @@ public class WishlistController extends BaseController implements BackNavigable 
                     continue;
                 }
 
-                // Item is either unreserved or reserved by current user
                 itemsContainer.getChildren().add(new WishItemCard(
                         viewModel,
                         null,
@@ -223,6 +219,4 @@ public class WishlistController extends BaseController implements BackNavigable 
             mainLayoutController.navToPreviousView();
         }
     }
-
-
 }

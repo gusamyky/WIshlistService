@@ -33,7 +33,6 @@ public class FeedbackController extends BaseController {
 
     @FXML
     public void initialize() {
-        // 1. Configure ComboBox to show Event Names
         eventComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(SecretSantaEvent event) {
@@ -46,7 +45,6 @@ public class FeedbackController extends BaseController {
             }
         });
 
-        // 2. Load Events where I am a participant
         User me = dataService.getLoggedInUser();
         eventComboBox.getItems().setAll(eventService.getMyEvents(me));
     }

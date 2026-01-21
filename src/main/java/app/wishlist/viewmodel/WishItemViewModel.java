@@ -10,11 +10,9 @@ import java.util.Objects;
 
 public class WishItemViewModel {
 
-    // The underlying data model
     @Getter
     private final WishItem model;
 
-    // JavaFX Properties for Binding
     private final StringProperty name = new SimpleStringProperty();
     private final StringProperty description = new SimpleStringProperty();
     private final StringProperty priceText = new SimpleStringProperty();
@@ -24,7 +22,6 @@ public class WishItemViewModel {
 
     public WishItemViewModel(WishItem item) {
         this.model = item;
-        // This should be set from the context where the ViewModel is used
         String currentUserLogin = DataServiceImpl.getInstance().getLoggedInUser().getLogin();
 
         boolean isReservedByLoggedInUser = false;
@@ -32,24 +29,20 @@ public class WishItemViewModel {
             isReservedByLoggedInUser = item.getReservedByUserLogin().equals(currentUserLogin);
         }
 
-        // Initialize properties from Model
         name.set(item.getName());
         description.set(item.getDescription());
         priceText.set(String.format("%.2f " + item.getPrice().getCurrency().getSymbol(), item.getPrice().getAmount()));
         isReserved.set(item.isReserved());
         this.isReservedByCurrentUser.set(isReservedByLoggedInUser);
 
-        // Image Handling: Load or fallback
         try {
             if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
-                image.set(new Image(item.getImageUrl(), true)); // background loading
+                image.set(new Image(item.getImageUrl(), true));
             } else {
-                // Load a placeholder from resources
                 image.set(new Image(
                         Objects.requireNonNull(getClass().getResourceAsStream("/icons/gift_placeholder.png"))));
             }
         } catch (Exception e) {
-            // Handle error silently or set fallback
         }
     }
 
@@ -83,7 +76,7 @@ public class WishItemViewModel {
 
     public void toggleReservation(String currentUserLogin) {
         if (isReserved.get()) {
-            // Logic to Un-reserve (only if current user is the one who reserved it)
+            // Logic to Unreserve
             if (currentUserLogin.equals(model.getReservedByUserLogin())) {
                 model.setReserved(false);
                 model.setReservedByUserLogin(null);

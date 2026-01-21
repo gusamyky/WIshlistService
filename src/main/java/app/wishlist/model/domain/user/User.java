@@ -15,7 +15,7 @@ public class User {
     protected String password; // Salt:Hash
     protected String firstName;
     protected String lastName;
-    protected String type = "USER"; // Discriminator for Polymorphism
+    protected String type = "USER";
 
     protected Set<String> friends = new HashSet<>();
 
