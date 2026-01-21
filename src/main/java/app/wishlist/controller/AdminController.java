@@ -1,5 +1,6 @@
 package app.wishlist.controller;
 
+import app.wishlist.controller.interfaces.BackNavigable;
 import app.wishlist.model.domain.event.SecretSantaEvent;
 import app.wishlist.model.domain.user.User;
 import app.wishlist.service.impl.DataServiceImpl;
@@ -10,11 +11,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import lombok.Setter;
 
 import java.io.File;
 import java.nio.file.Files;
 
-public class AdminController extends BaseController {
+public class AdminController extends BaseController implements BackNavigable {
 
     private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     private final SecretSantaServiceImpl secretSantaService = SecretSantaServiceImpl.getInstance();
@@ -32,6 +34,7 @@ public class AdminController extends BaseController {
     private Label myRecipientNameLabel;
     private SecretSantaEvent currentEvent;
     private User myRecipient;
+    @Setter
     private MainLayoutController mainLayoutController;
 
     @FXML
@@ -48,10 +51,6 @@ public class AdminController extends BaseController {
 
         availableList.setItems(availableUsers);
         selectedList.setItems(selectedUsers);
-    }
-
-    public void setMainLayoutController(MainLayoutController controller) {
-        this.mainLayoutController = controller;
     }
 
     public void setEvent(SecretSantaEvent event) {
@@ -118,7 +117,6 @@ public class AdminController extends BaseController {
 
         secretSantaService.performDraw(currentEvent);
 
-        // Refresh the recipient display now that the draw is complete
         loadMyRecipient();
 
         showAlert("Draw Complete", "The event has been updated. Pairs Assigned!");
@@ -154,7 +152,7 @@ public class AdminController extends BaseController {
             alert.showAndWait();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Failed to read event report file", e);
             showError("Error reading report file.");
         }
     }
@@ -180,6 +178,13 @@ public class AdminController extends BaseController {
     private void handleViewMyRecipientWishlist() {
         if (mainLayoutController != null && myRecipient != null) {
             mainLayoutController.navToFriendWishlist(myRecipient);
+        }
+    }
+
+    @Override
+    public void navigateBack() {
+        if (mainLayoutController != null) {
+            mainLayoutController.navToSecretSanta();
         }
     }
 }

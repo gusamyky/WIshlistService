@@ -9,14 +9,14 @@
             prefHeight="600.0" prefWidth="900.0">
 
     <left>
-        <VBox spacing="10" style="-fx-background-color: #f4f6f8; -fx-border-color: #e0e0e0; -fx-border-width: 0 1 0 0;"
+        <VBox spacing="10" styleClass="sidebar"
               prefWidth="220" alignment="TOP_CENTER">
             <padding>
                 <Insets top="20" right="10" bottom="20" left="10"/>
             </padding>
 
             <ImageView fx:id="userAvatar" fitHeight="60" fitWidth="60"/>
-            <Label fx:id="userNameLabel" text="Loading..." style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <Label fx:id="userNameLabel" text="Loading..." styleClass="sidebar-username"/>
             <Separator/>
 
             <VBox spacing="5" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
@@ -25,15 +25,15 @@
                 </fx:define>
 
                 <ToggleButton text="My Wishlist" toggleGroup="$navGroup" selected="true"
-                              maxWidth="Infinity" onAction="#navToWishlist" style="-fx-alignment: CENTER_LEFT;"/>
+                              maxWidth="Infinity" onAction="#navToWishlist" styleClass="nav-toggle-button"/>
 
                 <ToggleButton text="Friends' Lists" toggleGroup="$navGroup"
-                              maxWidth="Infinity" onAction="#navToFriends" style="-fx-alignment: CENTER_LEFT;"/>
+                              maxWidth="Infinity" onAction="#navToFriends" styleClass="nav-toggle-button"/>
 
                 <ToggleButton text="Secret Santa" toggleGroup="$navGroup"
-                              maxWidth="Infinity" onAction="#navToSecretSanta" style="-fx-alignment: CENTER_LEFT;"/>
+                              maxWidth="Infinity" onAction="#navToSecretSanta" styleClass="nav-toggle-button"/>
                 <ToggleButton text="Feedback" toggleGroup="$navGroup"
-                              maxWidth="Infinity" onAction="#navToFeedback" style="-fx-alignment: CENTER_LEFT;"/>
+                              maxWidth="Infinity" onAction="#navToFeedback" styleClass="nav-toggle-button"/>
             </VBox>
 
             <Button text="Sign Out" onAction="#handleLogout" styleClass="button-danger" maxWidth="Infinity"/>
@@ -41,7 +41,7 @@
     </left>
 
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: white;"/>
+        <StackPane fx:id="contentArea" styleClass="content-area-white"/>
     </center>
 
 </BorderPane>

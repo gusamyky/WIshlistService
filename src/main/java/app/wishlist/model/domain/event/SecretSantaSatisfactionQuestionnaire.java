@@ -15,11 +15,6 @@ public class SecretSantaSatisfactionQuestionnaire implements ReportInterface {
     private boolean wouldParticipateAgain;
 
     @Override
-    public String getReportTitle() {
-        return "Satisfaction Report: " + user.getFullName();
-    }
-
-    @Override
     public String getReportContent() {
         return String.format("""
                         User: %s (@%s)

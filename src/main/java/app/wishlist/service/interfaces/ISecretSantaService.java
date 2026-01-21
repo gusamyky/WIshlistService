@@ -12,7 +12,7 @@ import java.util.List;
 public interface ISecretSantaService {
 
     // Event Management
-    SecretSantaEvent createEvent(String name, User owner, LocalDate date);
+    void createEvent(String name, User owner, LocalDate date);
 
     List<SecretSantaEvent> getMyEvents(User user);
 

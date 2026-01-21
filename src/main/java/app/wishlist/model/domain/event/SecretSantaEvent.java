@@ -13,7 +13,7 @@ import java.util.UUID;
 public class SecretSantaEvent {
     private String id;
     private String name;
-    private String ownerLogin; // The "Admin" of this specific event
+    private String ownerLogin;
     private String eventDate;
     private boolean isDrawDone;
 

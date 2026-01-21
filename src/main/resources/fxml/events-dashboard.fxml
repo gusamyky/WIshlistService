@@ -3,13 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" spacing="15"
-      style="-fx-padding: 30; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      styleClass="container-white-30" xmlns="http://javafx.com/javafx/21"
       fx:controller="app.wishlist.controller.EventsDashboardController">
 
-    <Label text="My Secret Santa Events" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Label text="My Secret Santa Events" styleClass="label-24-bold"/>
 
-    <VBox spacing="10" style="-fx-background-color: #f4f4f4; -fx-padding: 15; -fx-background-radius: 5;">
-        <Label text="Create New Event" style="-fx-font-weight: bold;"/>
+    <VBox spacing="10" styleClass="container-light-gray">
+        <Label text="Create New Event" styleClass="label-bold"/>
         <HBox spacing="10">
             <TextField fx:id="eventNameField" promptText="Event Name (e.g. Office Party)" HBox.hgrow="ALWAYS"/>
             <DatePicker fx:id="eventDatePicker" promptText="Date"/>

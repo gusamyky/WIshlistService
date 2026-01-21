@@ -6,6 +6,7 @@ module app.wishlist {
     requires com.google.gson;
     requires transitive javafx.graphics;
     requires java.desktop;
+    requires org.slf4j;
 
     opens app.wishlist to javafx.fxml;
 

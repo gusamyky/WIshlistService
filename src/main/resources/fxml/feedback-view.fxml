@@ -3,25 +3,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20"
-      style="-fx-padding: 40; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      styleClass="container-white" xmlns="http://javafx.com/javafx/21"
       fx:controller="app.wishlist.controller.FeedbackController">
 
-    <Label text="Event Feedback" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Label text="Event Feedback" styleClass="label-24-bold"/>
     <Label text="How was your Secret Santa experience?" textFill="gray"/>
 
     <VBox spacing="5">
-        <Label text="Select Event:" style="-fx-font-weight: bold;"/>
+        <Label text="Select Event:" styleClass="label-bold"/>
         <ComboBox fx:id="eventComboBox" promptText="Choose an event..." maxWidth="300"/>
     </VBox>
 
     <VBox spacing="5">
-        <Label text="Rate your experience (1-5):" style="-fx-font-weight: bold;"/>
+        <Label text="Rate your experience (1-5):" styleClass="label-bold"/>
         <Slider fx:id="ratingSlider" min="1" max="5" majorTickUnit="1" minorTickCount="0"
                 showTickLabels="true" showTickMarks="true" snapToTicks="true" value="5"/>
     </VBox>
 
     <VBox spacing="5">
-        <Label text="Comments / Suggestions:" style="-fx-font-weight: bold;"/>
+        <Label text="Comments / Suggestions:" styleClass="label-bold"/>
         <TextArea fx:id="commentArea" prefRowCount="4" wrapText="true"
                   promptText="What did you like? What can we improve?"/>
     </VBox>

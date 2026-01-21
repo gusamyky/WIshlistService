@@ -79,24 +79,15 @@ public class WishItemCard extends VBox {
             ToggleButton reserveBtn = new ToggleButton();
             reserveBtn.getStyleClass().add("button-accent");
 
-            // Initial State Logic
             updateReserveButtonState(reserveBtn, viewModel);
 
             reserveBtn.setOnAction(e -> {
-                // If it was disabled, this event technically shouldn't fire via UI, but good to
-                // check
                 if (!reserveBtn.isDisabled()) {
                     onReserve.accept(viewModel);
                 }
             });
 
-            // Listen for changes
-            viewModel.isReservedProperty().addListener((obs, oldVal, newVal) -> {
-                updateReserveButtonState(reserveBtn, viewModel);
-            });
-            viewModel.isReservedByCurrentUserProperty().addListener((obs, oldVal, newVal) -> {
-                updateReserveButtonState(reserveBtn, viewModel);
-            });
+            addIsReservedListeners(viewModel, reserveBtn);
 
             actions.getChildren().add(reserveBtn);
         }
@@ -133,19 +124,26 @@ public class WishItemCard extends VBox {
         updateVisualState(viewModel.isReservedProperty().get());
     }
 
+    private void addIsReservedListeners(WishItemViewModel viewModel, ToggleButton reserveBtn) {
+        viewModel.isReservedProperty().addListener((obs, oldVal, newVal) -> {
+            updateReserveButtonState(reserveBtn, viewModel);
+        });
+        viewModel.isReservedByCurrentUserProperty().addListener((obs, oldVal, newVal) -> {
+            updateReserveButtonState(reserveBtn, viewModel);
+        });
+    }
+
     private void updateReserveButtonState(ToggleButton btn, WishItemViewModel vm) {
         boolean isReserved = vm.isReservedProperty().get();
         boolean isReservedByMe = vm.isReservedByCurrentUserProperty().get();
 
         if (isReserved) {
             if (isReservedByMe) {
-                // Reserved by ME -> Enable "Unreserve"
                 btn.setText("Unreserve");
                 btn.setDisable(false);
-                btn.setSelected(true); // Visually pressed usually means "Active/Reserved"
+                btn.setSelected(true);
             } else {
-                // Reserved by OTHERS -> Disable button
-                btn.setText("Reserved"); // Or "Reserved by others"
+                btn.setText("Reserved");
                 btn.setDisable(true);
                 btn.setSelected(true);
             }

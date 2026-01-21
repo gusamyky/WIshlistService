@@ -6,11 +6,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 @UtilityClass
 public class ViewSwitcher {
+    private static final Logger logger = LoggerFactory.getLogger(ViewSwitcher.class);
+
     @Getter
     private static Scene scene;
     @Getter
@@ -23,8 +27,6 @@ public class ViewSwitcher {
     public static void setRoot(Pane root) {
         ViewSwitcher.root = root;
     }
-
-    // Navigation
 
     public static void switchTo(String fxmlPath) {
         try {
@@ -43,7 +45,7 @@ public class ViewSwitcher {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load view: {}", fxmlPath, e);
             System.err.println("Failed to load view: " + fxmlPath);
         }
     }

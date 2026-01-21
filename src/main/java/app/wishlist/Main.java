@@ -34,14 +34,12 @@ public class Main extends Application {
         stage.setMinHeight(500);
 
 
-        // Set a custom icon, with fallback
         try {
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/wish-list-icon.png"))));
         } catch (Exception e) {
             System.out.println("Icon not found, using default.");
         }
 
-        // Set Dock Icon for macOS
         if (Taskbar.isTaskbarSupported()) {
             var taskbar = Taskbar.getTaskbar();
 

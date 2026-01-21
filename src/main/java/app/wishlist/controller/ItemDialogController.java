@@ -36,10 +36,8 @@ public class ItemDialogController extends BaseController {
 
     @FXML
     public void initialize() {
-        // Load currencies once when the view initializes
         currencyComboBox.getItems().addAll(MonetaryAmount.getAvailableCurrencies());
 
-        // the default selection
         currencyComboBox.getSelectionModel().select(Currency.getInstance("PLN"));
     }
 

@@ -8,14 +8,13 @@
            fx:controller="app.wishlist.controller.LoginController"
            prefHeight="600.0" prefWidth="900.0">
 
-    <VBox alignment="CENTER" maxWidth="350" spacing="20"
-          style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);">
+    <VBox alignment="CENTER" maxWidth="350" spacing="20" styleClass="login-box">
 
         <padding>
             <Insets top="40" right="40" bottom="40" left="40"/>
         </padding>
 
-        <Label text="Wishlist Service" style="-fx-font-weight: bold;">
+        <Label text="Wishlist Service" styleClass="app-title">
             <font>
                 <Font size="24.0"/>
             </font>
@@ -25,23 +24,23 @@
 
         <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="300">
             <VBox spacing="5">
-                <Label text="Username" style="-fx-font-weight: bold;"/>
+                <Label text="Username" styleClass="label-bold"/>
                 <TextField fx:id="loginField" promptText="Enter username"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Password" style="-fx-font-weight: bold;"/>
+                <Label text="Password" styleClass="label-bold"/>
                 <PasswordField fx:id="passwordField" promptText="Enter password"/>
             </VBox>
         </VBox>
 
-        <Label fx:id="errorLabel" text="Invalid login or password" visible="false" style="-fx-text-fill: red;"/>
+        <Label fx:id="errorLabel" text="Invalid login or password" visible="false" styleClass="text-error"/>
 
         <Button text="Sign In" onAction="#handleLogin" defaultButton="true"
                 prefWidth="300" styleClass="button-accent"/>
 
         <Button text="Create New Account" onAction="#handleGoToRegister"
-                prefWidth="300" style="-fx-background-color: transparent; -fx-text-fill: gray; -fx-font-size: 12px;"/>
+                prefWidth="300" styleClass="button-link"/>
     </VBox>
 
 </StackPane>

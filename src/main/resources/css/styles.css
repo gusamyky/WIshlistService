@@ -1,209 +1,351 @@
-/* src/main/resources/css/styles.css */
 .root {
-    font-family: 'Segoe UI', sans-serif;
-    -fx-font-family: 'Segoe UI', sans-serif;
-    font-size: 14px;
-    -fx-font-size: 14px;
-    background-color: #f4f4f4;
-    -fx-background-color: #f4f4f4;
+  -fx-font-family: "Segoe UI", sans-serif;
+  -fx-font-size: 14px;
+  -fx-background-color: #f4f4f4;
 }
 
 /* --- HEADERS --- */
 .header-label {
-    font-size: 24px;
-    -fx-font-size: 24px;
-    font-weight: bold;
-    -fx-font-weight: bold;
-    color: #333333;
-    -fx-text-fill: #333333;
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #333333;
 }
 
 .sub-header {
-    font-size: 18px;
-    -fx-font-size: 18px;
-    font-weight: bold;
-    -fx-font-weight: bold;
-    color: #555555;
-    -fx-text-fill: #555555;
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #555555;
 }
 
 /* --- BUTTONS --- */
 .button {
-    padding: 8px 16px;
-    -fx-padding: 8 16;
-    border-radius: 4px;
-    -fx-background-radius: 4;
-    cursor: hand;
-    -fx-cursor: hand;
+  -fx-padding: 8 16;
+  -fx-background-radius: 4;
+  -fx-cursor: hand;
 }
 
 /* Primary Action (Blue) */
 .button-accent {
-    background-color: #007bff;
-    -fx-background-color: #007bff;
-    color: white;
-    -fx-text-fill: white;
-    font-weight: bold;
-    -fx-font-weight: bold;
+  -fx-background-color: #007bff;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
 }
 
 .button-accent:hover {
-    background-color: #0056b3;
-    -fx-background-color: #0056b3;
+  -fx-background-color: #0056b3;
 }
 
 /* Positive Action (Green) - e.g. Add, Save, Create */
 .button-success {
-    background-color: #28a745;
-    -fx-background-color: #28a745;
-    color: white;
-    -fx-text-fill: white;
+  -fx-background-color: #28a745;
+  -fx-text-fill: white;
 }
 
 .button-success:hover {
-    background-color: #1e7e34;
-    -fx-background-color: #1e7e34;
+  -fx-background-color: #1e7e34;
 }
 
 /* Danger Action (Red) - e.g. Remove, Delete */
 .button-danger {
-    background-color: #dc3545;
-    -fx-background-color: #dc3545;
-    color: white;
-    -fx-text-fill: white;
+  -fx-background-color: #dc3545;
+  -fx-text-fill: white;
 }
 
 .button-danger:hover {
-    background-color: #bd2130;
-    -fx-background-color: #bd2130;
+  -fx-background-color: #bd2130;
 }
 
 /* Sidebar Navigation Buttons */
 .nav-button {
-    background-color: transparent;
-    -fx-background-color: transparent;
-    color: #333333;
-    -fx-text-fill: #333333;
-    text-align: left;
-    -fx-alignment: CENTER_LEFT;
-    padding: 12px 20px;
-    -fx-padding: 12 20;
-    font-size: 15px;
-    -fx-font-size: 15px;
+  -fx-background-color: transparent;
+  -fx-text-fill: #333333;
+  -fx-alignment: CENTER_LEFT;
+  -fx-padding: 12 20;
+  -fx-font-size: 15px;
 }
 
 .nav-button:hover {
-    background-color: #e2e6ea;
-    -fx-background-color: #e2e6ea;
+  -fx-background-color: #e2e6ea;
 }
 
 .nav-button:selected {
-    background-color: #007bff;
-    -fx-background-color: #007bff;
-    color: white;
-    -fx-text-fill: white;
-    font-weight: bold;
-    -fx-font-weight: bold;
+  -fx-background-color: #007bff;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
 }
 
 /* --- LIST VIEW --- */
 .list-cell {
-    padding: 10px;
-    -fx-padding: 10;
-    background-color: white;
-    -fx-background-color: white;
-    border-color: #e0e0e0;
-    -fx-border-color: #e0e0e0;
-    border-width: 0 0 1px 0;
-    -fx-border-width: 0 0 1 0;
+  -fx-padding: 10;
+  -fx-background-color: white;
+  -fx-border-color: #e0e0e0;
+  -fx-border-width: 0 0 1 0;
 }
 
 .list-cell:selected {
-    background-color: #e8f0fe;
-    -fx-background-color: #e8f0fe;
-    color: black;
-    -fx-text-fill: black;
+  -fx-background-color: #e8f0fe;
+  -fx-text-fill: black;
 }
 
 /* --- WISH ITEM CARD STYLES --- */
 .wish-card {
-    background-color: white;
-    -fx-background-color: white;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-    border-radius: 8px;
-    -fx-background-radius: 8;
+  -fx-background-color: white;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+  -fx-background-radius: 8;
 }
 
 .wish-card-name {
-    font-weight: bold;
-    -fx-font-weight: bold;
-    font-size: 16px;
-    -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
 }
 
 .wish-card-price {
-    color: green;
-    -fx-text-fill: green;
+  -fx-text-fill: green;
 }
 
 /* --- WISH ITEM DETAILS STYLES --- */
 .wish-details-name {
-    font-weight: bold;
-    -fx-font-weight: bold;
-    font-size: 20px;
-    -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-font-size: 20px;
 }
 
 .wish-details-price {
-    color: green;
-    -fx-text-fill: green;
-    font-size: 16px;
-    -fx-font-size: 16px;
-    font-weight: bold;
-    -fx-font-weight: bold;
+  -fx-text-fill: green;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
 }
 
 /* --- BADGE STYLES --- */
 .badge-reserved {
-    color: white;
-    -fx-text-fill: white;
-    background-color: #ff4444;
-    -fx-background-color: #ff4444;
-    font-weight: bold;
-    -fx-font-weight: bold;
-    font-size: 12px;
-    -fx-font-size: 12px;
-    padding: 2px 6px;
-    -fx-padding: 2 6 2 6;
-    border-radius: 4px;
-    -fx-background-radius: 4;
+  -fx-text-fill: white;
+  -fx-background-color: #ff4444;
+  -fx-font-weight: bold;
+  -fx-font-size: 12px;
+  -fx-padding: 2 6 2 6;
+  -fx-background-radius: 4;
 }
 
 /* --- DIALOG STYLES --- */
 .dialog-content {
-    background-color: white;
-    -fx-background-color: white;
+  -fx-background-color: white;
 }
 
 .text-area-readonly {
-    background-color: white;
-    -fx-control-inner-background: white;
-    -fx-background-color: white;
-    color: black;
-    -fx-text-fill: black;
-    font-size: 14px;
-    -fx-font-size: 14px;
+  -fx-control-inner-background: white;
+  -fx-background-color: white;
+  -fx-text-fill: black;
+  -fx-font-size: 14px;
 }
 
 /* --- FRIEND LIST STYLES --- */
 .friend-name {
-    font-weight: bold;
-    -fx-font-weight: bold;
+  -fx-font-weight: bold;
 }
 
 .button-remove-friend {
-    background-color: #ffcccc;
-    -fx-background-color: #ffcccc;
-    color: red;
-    -fx-text-fill: red;
+  -fx-background-color: #ffcccc;
+  -fx-text-fill: red;
+}
+
+/* --- LOGIN/REGISTER VIEW STYLES --- */
+.login-box {
+  -fx-background-color: white;
+  -fx-background-radius: 10;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.app-title {
+  -fx-font-weight: bold;
+}
+
+.label-bold {
+  -fx-font-weight: bold;
+}
+
+.label-bold-large {
+  -fx-font-weight: bold;
+  -fx-font-size: 24px;
+}
+
+.label-bold-medium {
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
+}
+
+.label-bold-small {
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+}
+
+.label-bold-18 {
+  -fx-font-weight: bold;
+  -fx-font-size: 18px;
+}
+
+.text-error {
+  -fx-text-fill: red;
+}
+
+.button-link {
+  -fx-background-color: transparent;
+  -fx-text-fill: gray;
+  -fx-font-size: 12px;
+}
+
+.button-link-underline {
+  -fx-background-color: transparent;
+  -fx-text-fill: #0066cc;
+  -fx-underline: true;
+}
+
+.button-accent-large {
+  -fx-font-size: 14px;
+}
+
+/* --- CONTAINER STYLES --- */
+.container-white {
+  -fx-padding: 40;
+  -fx-background-color: white;
+}
+
+.container-white-30 {
+  -fx-padding: 30;
+  -fx-background-color: white;
+}
+
+.container-white-20 {
+  -fx-padding: 20;
+  -fx-background-color: white;
+}
+
+.container-light-gray {
+  -fx-background-color: #f4f4f4;
+  -fx-padding: 15;
+  -fx-background-radius: 5;
+}
+
+.container-light-rounded {
+  -fx-padding: 20;
+  -fx-background-color: #f9f9f9;
+  -fx-background-radius: 8;
+}
+
+/* --- SIDEBAR STYLES --- */
+.sidebar {
+  -fx-background-color: #f4f6f8;
+  -fx-border-color: #e0e0e0;
+  -fx-border-width: 0 1 0 0;
+}
+
+.sidebar-username {
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+}
+
+.nav-toggle-button {
+  -fx-alignment: CENTER_LEFT;
+}
+
+/* --- CONTENT AREA STYLES --- */
+.content-area-white {
+  -fx-background-color: white;
+}
+
+.scrollpane-white {
+  -fx-background-color: white;
+}
+
+.scrollpane-transparent {
+  -fx-background-color: transparent;
+}
+
+/* --- SECRET SANTA REVEAL STYLES --- */
+.reveal-header {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+}
+
+.reveal-waiting-text {
+  -fx-text-fill: gray;
+  -fx-font-size: 16px;
+}
+
+.reveal-waiting-subtext {
+  -fx-text-fill: gray;
+}
+
+.reveal-instruction {
+  -fx-font-size: 18px;
+}
+
+.reveal-target-name {
+  -fx-font-size: 32px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #d32f2f;
+}
+
+.button-success-large {
+  -fx-font-size: 16px;
+  -fx-padding: 10 20;
+}
+
+.button-success-medium {
+  -fx-font-size: 14px;
+  -fx-padding: 8 16;
+}
+
+/* --- ADMIN VIEW STYLES --- */
+.admin-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+}
+
+.button-accent-draw {
+  -fx-font-size: 16px;
+  -fx-padding: 10;
+}
+
+.button-reports {
+  -fx-font-size: 14px;
+}
+
+.recipient-name-label {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #d32f2f;
+}
+
+/* --- WISHLIST VIEW STYLES --- */
+.wishlist-header {
+  -fx-background-color: white;
+  -fx-padding: 20;
+}
+
+.wishlist-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+}
+
+.text-gray {
+  -fx-text-fill: gray;
+}
+
+/* --- GENERAL STYLES --- */
+.label-24-bold {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+}
+
+.label-14 {
+  -fx-font-size: 14px;
+}
+
+/* --- BACK BUTTON STYLES --- */
+.button-back {
+  -fx-background-color: #6c757d;
+  -fx-text-fill: white;
+}
+
+.button-back:hover {
+  -fx-background-color: #5a6268;
 }

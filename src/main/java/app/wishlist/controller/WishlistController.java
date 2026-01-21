@@ -1,6 +1,7 @@
 package app.wishlist.controller;
 
 import app.wishlist.consts.AppRoutes;
+import app.wishlist.controller.interfaces.BackNavigable;
 import app.wishlist.model.domain.user.User;
 import app.wishlist.model.domain.wishlist.WishItem;
 import app.wishlist.service.impl.DataServiceImpl;
@@ -17,12 +18,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class WishlistController extends BaseController {
+public class WishlistController extends BaseController implements BackNavigable {
 
     private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
@@ -33,7 +35,11 @@ public class WishlistController extends BaseController {
     private FlowPane itemsContainer;
     @FXML
     private Button addItemButton;
+    @FXML
+    private Button backButton;
     private User targetUser;
+    @Setter
+    private MainLayoutController mainLayoutController;
 
     @FXML
     public void initialize() {
@@ -64,10 +70,18 @@ public class WishlistController extends BaseController {
             pageTitle.setText("My Wishlist");
             if (addItemButton != null)
                 addItemButton.setVisible(true);
+            if (backButton != null) {
+                backButton.setVisible(false);
+                backButton.setManaged(false);
+            }
         } else {
             pageTitle.setText(targetUser.getFullName() + "'s Wishlist");
             if (addItemButton != null)
                 addItemButton.setVisible(false);
+            if (backButton != null) {
+                backButton.setVisible(true);
+                backButton.setManaged(true);
+            }
         }
 
         loadWishlist(isOwner);
@@ -76,6 +90,7 @@ public class WishlistController extends BaseController {
     private boolean isCurrentUserOwner() {
         if (targetUser == null || dataService.getLoggedInUser() == null)
             return false;
+
         return targetUser.getLogin().equals(dataService.getLoggedInUser().getLogin());
     }
 
@@ -93,15 +108,13 @@ public class WishlistController extends BaseController {
                         viewModel,
                         this::handleEditItem,
                         this::handleDeleteItem,
-                        null // No Reserve action for owner
-                ));
+                        null));
             } else {
                 boolean isReserved = viewModel.isReservedProperty().get();
                 boolean isReservedByCurrentUser = isReserved &&
                         dataService.getLoggedInUser().getLogin().equals(item.getReservedByUserLogin());
                 // SHOPPING MODE: NO Edit/Delete, YES Reserve
                 if (isReservedByCurrentUser) {
-                    // Item reserved by current user
                     itemsContainer.getChildren().add(new WishItemCard(
                             viewModel,
                             null,
@@ -110,7 +123,6 @@ public class WishlistController extends BaseController {
                     continue;
                 }
 
-                // Item is either unreserved or reserved by current user
                 itemsContainer.getChildren().add(new WishItemCard(
                         viewModel,
                         null,
@@ -147,7 +159,8 @@ public class WishlistController extends BaseController {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load add item dialog", e);
+            showError("Failed to open dialog. Please try again.");
         }
     }
 
@@ -183,7 +196,8 @@ public class WishlistController extends BaseController {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load edit item dialog", e);
+            showError("Failed to open edit dialog. Please try again.");
         }
     }
 
@@ -198,6 +212,13 @@ public class WishlistController extends BaseController {
             dataService.removeWishItem(viewModel.getModel());
 
             refreshView();
+        }
+    }
+
+    @Override
+    public void navigateBack() {
+        if (mainLayoutController != null) {
+            mainLayoutController.navToPreviousView();
         }
     }
 }

@@ -1,5 +1,6 @@
 package app.wishlist.controller;
 
+import app.wishlist.controller.interfaces.BackNavigable;
 import app.wishlist.model.domain.event.SecretSantaEvent;
 import app.wishlist.model.domain.user.User;
 import app.wishlist.service.impl.DataServiceImpl;
@@ -9,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
-public class RevealController extends BaseController {
+public class RevealController extends BaseController implements BackNavigable {
 
     private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     private final SecretSantaServiceImpl santaService = SecretSantaServiceImpl.getInstance();
@@ -69,6 +70,13 @@ public class RevealController extends BaseController {
     private void handleGoToWishlist() {
         if (mainLayoutController != null && myTarget != null) {
             mainLayoutController.navToFriendWishlist(myTarget);
+        }
+    }
+
+    @Override
+    public void navigateBack() {
+        if (mainLayoutController != null) {
+            mainLayoutController.navToSecretSanta();
         }
     }
 }

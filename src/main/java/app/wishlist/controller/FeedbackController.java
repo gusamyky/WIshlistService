@@ -33,7 +33,6 @@ public class FeedbackController extends BaseController {
 
     @FXML
     public void initialize() {
-        // 1. Configure ComboBox to show Event Names
         eventComboBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(SecretSantaEvent event) {
@@ -46,7 +45,6 @@ public class FeedbackController extends BaseController {
             }
         });
 
-        // 2. Load Events where I am a participant
         User me = dataService.getLoggedInUser();
         eventComboBox.getItems().setAll(eventService.getMyEvents(me));
     }
@@ -92,7 +90,7 @@ public class FeedbackController extends BaseController {
             writer.write("\n------------------------------------------------\n\n");
             System.out.println("Appended feedback to: " + file.getAbsolutePath());
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to save feedback report to file: " + file.getAbsolutePath(), e);
             showError("Failed to save report.");
         }
     }

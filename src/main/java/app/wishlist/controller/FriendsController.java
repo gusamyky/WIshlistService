@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class FriendsController extends BaseController {
 
     private final DataServiceImpl dataService = DataServiceImpl.getInstance();
+    private final ObservableList<User> displayedUsers = FXCollections.observableArrayList();
     @FXML
     private TextField searchField;
     @FXML
@@ -25,19 +26,19 @@ public class FriendsController extends BaseController {
     private Label listTitleLabel;
     @Setter
     private MainLayoutController mainLayoutController;
-    private ObservableList<User> displayedUsers = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         usersList.setItems(displayedUsers);
 
-        // Use an Anonymous Inner Class or simple Lambda for the cell factory
         usersList.setCellFactory(param -> new UserListCell());
 
-        // Default: Show my existing friends
         showMyFriends();
 
-        // Live search listener
+        initSearchField();
+    }
+
+    private void initSearchField() {
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null || newVal.isBlank()) {
                 showMyFriends();
@@ -49,7 +50,9 @@ public class FriendsController extends BaseController {
 
     private void showMyFriends() {
         listTitleLabel.setText("My Friends");
+
         User me = dataService.getLoggedInUser();
+
         if (me == null)
             return;
 
@@ -71,9 +74,8 @@ public class FriendsController extends BaseController {
         listTitleLabel.setText("Search Results");
         User me = dataService.getLoggedInUser();
 
-        // Filter users who match the query AND are not me
         List<User> results = dataService.getAllUsers().stream()
-                .filter(u -> !u.getLogin().equals(me.getLogin())) // Not me
+                .filter(u -> !u.getLogin().equals(me.getLogin()))
                 .filter(u -> u.getLogin().toLowerCase().contains(query) ||
                         u.getFullName().toLowerCase().contains(query))
                 .collect(Collectors.toList());
@@ -127,9 +129,7 @@ public class FriendsController extends BaseController {
                         updateItem(user, false); // Refresh cell to show "Remove"
                     });
                 }
-
-                // Allow clicking the row to view Wishlist (Polymorphism in action if we had
-                // different views)
+                
                 container.setOnMouseClicked(e -> {
                     if (mainLayoutController != null) {
                         mainLayoutController.navToFriendWishlist(user);

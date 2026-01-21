@@ -26,10 +26,11 @@ public class MainLayoutController extends BaseController {
     private StackPane contentArea;
 
     private String currentView = "";
+    private String previousView = "";
+    private SecretSantaEvent currentEvent = null;
 
     @FXML
     public void initialize() {
-        // Trigger re-compilation
         User currentUser = dataService.getLoggedInUser();
 
         Image userAvatarImage = new Image(
@@ -44,7 +45,7 @@ public class MainLayoutController extends BaseController {
     }
 
     @FXML
-    private void navToWishlist() {
+    public void navToWishlist() {
         loadView(AppRoutes.WISHLIST);
     }
 
@@ -54,18 +55,26 @@ public class MainLayoutController extends BaseController {
             Parent view = loader.load();
 
             WishlistController controller = loader.getController();
+            controller.setMainLayoutController(this);
             controller.setup(friend);
 
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
+            if (AppRoutes.REVEAL.equals(currentView) || AppRoutes.ADMIN.equals(currentView)) {
+                previousView = currentView;
+            } else {
+                previousView = currentView.isEmpty() ? AppRoutes.FRIENDS : currentView;
+            }
+            currentView = "/fxml/wishlist-view.fxml";
+
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load friend's wishlist view", e);
+            showError("Failed to load wishlist. Please try again.");
         }
     }
 
-    @FXML
-    private void navToSecretSanta() {
+    public void navToSecretSanta() {
         loadView(AppRoutes.EVENTS_DASHBOARD);
     }
 
@@ -92,19 +101,34 @@ public class MainLayoutController extends BaseController {
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
+            previousView = AppRoutes.EVENTS_DASHBOARD;
+            currentView = fxml;
+            currentEvent = event;
+
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load event details view", e);
+            showError("Failed to load event details. Please try again.");
         }
     }
 
-    @FXML
-    private void navToFeedback() {
+    public void navToFeedback() {
         loadView(AppRoutes.FEEDBACK);
     }
 
-    @FXML
-    private void navToFriends() {
+    public void navToFriends() {
         loadView(AppRoutes.FRIENDS);
+    }
+
+    public void navToPreviousView() {
+        if (!previousView.isEmpty()) {
+            if ((AppRoutes.REVEAL.equals(previousView) || AppRoutes.ADMIN.equals(previousView))
+                    && currentEvent != null) {
+                navToEventDetails(currentEvent);
+            } else {
+                loadView(previousView);
+            }
+            previousView = "";
+        }
     }
 
     @FXML
@@ -115,11 +139,6 @@ public class MainLayoutController extends BaseController {
 
     /// Helper method to load a view.
     private void loadView(String fxmlPath) {
-        if (currentView.equals(fxmlPath)) {
-            System.out.println("View already active: " + fxmlPath);
-            return;
-        }
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
@@ -137,7 +156,8 @@ public class MainLayoutController extends BaseController {
             currentView = fxmlPath;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load view: " + fxmlPath, e);
+            showError("Failed to load view. Please try again.");
         }
     }
 }
