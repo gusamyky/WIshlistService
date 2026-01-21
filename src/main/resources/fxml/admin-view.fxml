@@ -4,62 +4,66 @@
 <?import javafx.scene.layout.*?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
             fx:controller="app.wishlist.controller.AdminController"
-            fitToWidth="true" style="-fx-background-color: white;">
-    
-<VBox spacing="20" style="-fx-padding: 30; -fx-background-color: white;">
+            fitToWidth="true" styleClass="scrollpane-white">
 
-    <Label text="Secret Santa Admin Hub" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    <Label text="Configure the event and perform the draw." textFill="gray"/>
+    <VBox spacing="20" styleClass="container-white-30">
 
-    <Separator/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button text="← Back" onAction="#navigateBack" styleClass="button-back"/>
+            <Label text="Secret Santa Admin Hub" styleClass="admin-title"/>
+        </HBox>
 
-    <HBox spacing="15" alignment="CENTER_LEFT">
-        <Label text="Event End Date:" style="-fx-font-weight: bold;"/>
-        <DatePicker fx:id="datePicker"/>
-    </HBox>
+        <Label text="Configure the event and perform the draw." textFill="gray"/>
 
-    <Label text="Select Participants" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Separator/>
 
-    <HBox spacing="10" prefHeight="300">
-        <VBox spacing="5" HBox.hgrow="ALWAYS">
-            <Label text="Available Users"/>
-            <ListView fx:id="availableList" VBox.vgrow="ALWAYS"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Event End Date:" styleClass="label-bold"/>
+            <DatePicker fx:id="datePicker"/>
+        </HBox>
+
+        <Label text="Select Participants" styleClass="label-bold-medium"/>
+
+        <HBox spacing="10" prefHeight="300">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Available Users"/>
+                <ListView fx:id="availableList" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <VBox spacing="10" alignment="CENTER">
+                <Button text="&gt;" onAction="#handleAdd" prefWidth="40"/>
+                <Button text="&lt;" onAction="#handleRemove" prefWidth="40"/>
+            </VBox>
+
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Selected Group"/>
+                <ListView fx:id="selectedList" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </HBox>
+
+        <Separator/>
+
+        <Button text="🎲 DRAW PAIRS" onAction="#handleDraw"
+                styleClass="button-accent button-accent-draw" maxWidth="Infinity"/>
+
+        <Label text="Feedback Analysis" styleClass="label-bold"/>
+        <Button text="📂 Load &amp; Analyze Reports" onAction="#handleViewReports"
+                maxWidth="Infinity" styleClass="button-reports"/>
+
+        <Separator/>
+
+        <VBox fx:id="myRecipientBox" spacing="15" alignment="CENTER" visible="false"
+              styleClass="container-light-rounded">
+            <Label text="Your Secret Santa Recipient:" styleClass="label-bold-medium"/>
+
+            <Label fx:id="myRecipientNameLabel" text="[NAME]"
+                   styleClass="recipient-name-label"/>
+
+            <Button text="View Their Wishlist" onAction="#handleViewMyRecipientWishlist"
+                    styleClass="button-success button-success-medium"/>
         </VBox>
 
-        <VBox spacing="10" alignment="CENTER">
-            <Button text="&gt;" onAction="#handleAdd" prefWidth="40"/>
-            <Button text="&lt;" onAction="#handleRemove" prefWidth="40"/>
-        </VBox>
-
-        <VBox spacing="5" HBox.hgrow="ALWAYS">
-            <Label text="Selected Group"/>
-            <ListView fx:id="selectedList" VBox.vgrow="ALWAYS"/>
-        </VBox>
-    </HBox>
-
-    <Separator/>
-
-    <Button text="🎲 DRAW PAIRS" onAction="#handleDraw"
-            styleClass="button-accent" maxWidth="Infinity" style="-fx-font-size: 16px; -fx-padding: 10;"/>
-
-    <Label text="Feedback Analysis" style="-fx-font-weight: bold;"/>
-    <Button text="📂 Load &amp; Analyze Reports" onAction="#handleViewReports"
-            maxWidth="Infinity" style="-fx-font-size: 14px;"/>
-
-    <Separator/>
-
-    <VBox fx:id="myRecipientBox" spacing="15" alignment="CENTER" visible="false"
-          style="-fx-padding: 20; -fx-background-color: #f9f9f9; -fx-background-radius: 8;">
-        <Label text="Your Secret Santa Recipient:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-        
-        <Label fx:id="myRecipientNameLabel" text="[NAME]"
-               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #d32f2f;"/>
-        
-        <Button text="View Their Wishlist" onAction="#handleViewMyRecipientWishlist"
-                styleClass="button-success" style="-fx-font-size: 14px; -fx-padding: 8 16;"/>
     </VBox>
-
-</VBox>
 
 </ScrollPane>
 

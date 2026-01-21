@@ -1,5 +1,6 @@
 package app.wishlist.controller;
 
+import app.wishlist.controller.interfaces.BackNavigable;
 import app.wishlist.model.domain.event.SecretSantaEvent;
 import app.wishlist.model.domain.user.User;
 import app.wishlist.service.impl.DataServiceImpl;
@@ -14,7 +15,7 @@ import javafx.util.Callback;
 import java.io.File;
 import java.nio.file.Files;
 
-public class AdminController extends BaseController {
+public class AdminController extends BaseController implements BackNavigable {
 
     private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     private final SecretSantaServiceImpl secretSantaService = SecretSantaServiceImpl.getInstance();
@@ -180,6 +181,13 @@ public class AdminController extends BaseController {
     private void handleViewMyRecipientWishlist() {
         if (mainLayoutController != null && myRecipient != null) {
             mainLayoutController.navToFriendWishlist(myRecipient);
+        }
+    }
+
+    @Override
+    public void navigateBack() {
+        if (mainLayoutController != null) {
+            mainLayoutController.navToSecretSanta();
         }
     }
 }

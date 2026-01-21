@@ -8,11 +8,14 @@
             prefHeight="600.0" prefWidth="900.0">
 
     <top>
-        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20;">
+        <VBox spacing="10" styleClass="wishlist-header">
             <HBox alignment="CENTER_LEFT" spacing="20">
-                <Label fx:id="pageTitle" text="My Wishlist" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Button fx:id="backButton" text="← Back" onAction="#navigateBack"
+                        styleClass="button-back" visible="false" managed="false"/>
 
-                <Label fx:id="userLabel" text="Logged in as..." style="-fx-text-fill: gray;"/>
+                <Label fx:id="pageTitle" text="My Wishlist" styleClass="wishlist-title"/>
+
+                <Label fx:id="userLabel" text="Logged in as..." styleClass="text-gray"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
@@ -24,7 +27,7 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+        <ScrollPane fitToWidth="true" styleClass="scrollpane-transparent">
             <content>
                 <FlowPane fx:id="itemsContainer" hgap="20" vgap="20">
                     <padding>

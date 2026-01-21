@@ -4,10 +4,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" spacing="20"
-      style="-fx-padding: 30; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21"
+      styleClass="container-white-30" xmlns="http://javafx.com/javafx/21"
       fx:controller="app.wishlist.controller.FriendsController">
 
-    <Label text="Manage Friends" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Label text="Manage Friends" styleClass="label-24-bold"/>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <TextField fx:id="searchField" promptText="Search users by name or login..." HBox.hgrow="ALWAYS"/>
@@ -16,7 +16,7 @@
 
     <Separator/>
 
-    <Label fx:id="listTitleLabel" text="My Friends" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-    <ListView fx:id="usersList" VBox.vgrow="ALWAYS" style="-fx-font-size: 14px;"/>
+    <Label fx:id="listTitleLabel" text="My Friends" styleClass="label-bold-small"/>
+    <ListView fx:id="usersList" VBox.vgrow="ALWAYS" styleClass="label-14"/>
 
 </VBox>

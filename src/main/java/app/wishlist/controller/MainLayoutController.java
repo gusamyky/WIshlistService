@@ -26,6 +26,8 @@ public class MainLayoutController extends BaseController {
     private StackPane contentArea;
 
     private String currentView = "";
+    private String previousView = "";
+    private SecretSantaEvent currentEvent = null; // Track the current event for Reveal/Admin views
 
     @FXML
     public void initialize() {
@@ -44,7 +46,7 @@ public class MainLayoutController extends BaseController {
     }
 
     @FXML
-    private void navToWishlist() {
+    public void navToWishlist() {
         loadView(AppRoutes.WISHLIST);
     }
 
@@ -54,18 +56,27 @@ public class MainLayoutController extends BaseController {
             Parent view = loader.load();
 
             WishlistController controller = loader.getController();
+            controller.setMainLayoutController(this);
             controller.setup(friend);
 
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
+
+            // Save the current view before navigating to friend's wishlist
+            // Check if we're coming from Reveal or Admin view
+            if (AppRoutes.REVEAL.equals(currentView) || AppRoutes.ADMIN.equals(currentView)) {
+                previousView = currentView;
+            } else {
+                previousView = currentView.isEmpty() ? AppRoutes.FRIENDS : currentView;
+            }
+            currentView = "/fxml/wishlist-view.fxml"; // Track that we're now in friend's wishlist
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    private void navToSecretSanta() {
+    public void navToSecretSanta() {
         loadView(AppRoutes.EVENTS_DASHBOARD);
     }
 
@@ -92,19 +103,35 @@ public class MainLayoutController extends BaseController {
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
 
+            // Save previous view (events dashboard) for back navigation
+            previousView = AppRoutes.EVENTS_DASHBOARD;
+            currentView = fxml; // Track that we're now in Admin or Reveal view
+            currentEvent = event; // Remember the event for potential back navigation
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    private void navToFeedback() {
+    public void navToFeedback() {
         loadView(AppRoutes.FEEDBACK);
     }
 
-    @FXML
-    private void navToFriends() {
+    public void navToFriends() {
         loadView(AppRoutes.FRIENDS);
+    }
+
+    public void navToPreviousView() {
+        if (!previousView.isEmpty()) {
+            // Special handling for Reveal/Admin views - need to restore event data
+            if ((AppRoutes.REVEAL.equals(previousView) || AppRoutes.ADMIN.equals(previousView))
+                    && currentEvent != null) {
+                navToEventDetails(currentEvent);
+            } else {
+                loadView(previousView);
+            }
+            previousView = "";
+        }
     }
 
     @FXML

@@ -1,6 +1,7 @@
 package app.wishlist.controller;
 
 import app.wishlist.consts.AppRoutes;
+import app.wishlist.controller.interfaces.BackNavigable;
 import app.wishlist.model.domain.user.User;
 import app.wishlist.model.domain.wishlist.WishItem;
 import app.wishlist.service.impl.DataServiceImpl;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class WishlistController extends BaseController {
+public class WishlistController extends BaseController implements BackNavigable {
 
     private final DataServiceImpl dataService = DataServiceImpl.getInstance();
     @FXML
@@ -33,7 +34,10 @@ public class WishlistController extends BaseController {
     private FlowPane itemsContainer;
     @FXML
     private Button addItemButton;
+    @FXML
+    private Button backButton;
     private User targetUser;
+    private MainLayoutController mainLayoutController;
 
     @FXML
     public void initialize() {
@@ -47,6 +51,10 @@ public class WishlistController extends BaseController {
     public void setup(User user) {
         this.targetUser = user;
         refreshView();
+    }
+
+    public void setMainLayoutController(MainLayoutController controller) {
+        this.mainLayoutController = controller;
     }
 
     private void refreshView() {
@@ -64,10 +72,18 @@ public class WishlistController extends BaseController {
             pageTitle.setText("My Wishlist");
             if (addItemButton != null)
                 addItemButton.setVisible(true);
+            if (backButton != null) {
+                backButton.setVisible(false);
+                backButton.setManaged(false);
+            }
         } else {
             pageTitle.setText(targetUser.getFullName() + "'s Wishlist");
             if (addItemButton != null)
                 addItemButton.setVisible(false);
+            if (backButton != null) {
+                backButton.setVisible(true);
+                backButton.setManaged(true);
+            }
         }
 
         loadWishlist(isOwner);
@@ -200,4 +216,13 @@ public class WishlistController extends BaseController {
             refreshView();
         }
     }
+
+    @Override
+    public void navigateBack() {
+        if (mainLayoutController != null) {
+            mainLayoutController.navToPreviousView();
+        }
+    }
+
+
 }
