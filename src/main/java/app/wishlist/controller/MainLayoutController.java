@@ -139,11 +139,6 @@ public class MainLayoutController extends BaseController {
 
     /// Helper method to load a view.
     private void loadView(String fxmlPath) {
-        if (currentView.equals(fxmlPath)) {
-            System.out.println("View already active: " + fxmlPath);
-            return;
-        }
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent view = loader.load();
