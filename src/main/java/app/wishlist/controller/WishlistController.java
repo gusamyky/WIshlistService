@@ -88,7 +88,8 @@ public class WishlistController extends BaseController implements BackNavigable 
     }
 
     private boolean isCurrentUserOwner() {
-        if (targetUser == null || dataService.getLoggedInUser() == null) return false;
+        if (targetUser == null || dataService.getLoggedInUser() == null)
+            return false;
 
         return targetUser.getLogin().equals(dataService.getLoggedInUser().getLogin());
     }
@@ -107,8 +108,7 @@ public class WishlistController extends BaseController implements BackNavigable 
                         viewModel,
                         this::handleEditItem,
                         this::handleDeleteItem,
-                        null
-                ));
+                        null));
             } else {
                 boolean isReserved = viewModel.isReservedProperty().get();
                 boolean isReservedByCurrentUser = isReserved &&
@@ -159,7 +159,8 @@ public class WishlistController extends BaseController implements BackNavigable 
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load add item dialog", e);
+            showError("Failed to open dialog. Please try again.");
         }
     }
 
@@ -195,7 +196,8 @@ public class WishlistController extends BaseController implements BackNavigable 
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load edit item dialog", e);
+            showError("Failed to open edit dialog. Please try again.");
         }
     }
 

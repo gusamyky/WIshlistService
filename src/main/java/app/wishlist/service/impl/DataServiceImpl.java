@@ -9,6 +9,8 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -16,6 +18,7 @@ import java.util.*;
 
 public class DataServiceImpl implements IDataService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataServiceImpl.class);
     private static final DataServiceImpl INSTANCE = new DataServiceImpl();
     private static final String DATA_FILE = "wishlist_data.json";
     private final Gson gson;
@@ -207,7 +210,7 @@ public class DataServiceImpl implements IDataService {
 
             gson.toJson(wrapper, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to save data to file: {}", DATA_FILE, e);
         }
     }
 
@@ -231,7 +234,7 @@ public class DataServiceImpl implements IDataService {
                 this.wishlists = wrapper.wishlists != null ? wrapper.wishlists : new HashMap<>();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load data from file: {}", DATA_FILE, e);
         }
     }
 

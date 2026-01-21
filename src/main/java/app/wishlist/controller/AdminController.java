@@ -116,7 +116,7 @@ public class AdminController extends BaseController implements BackNavigable {
         }
 
         secretSantaService.performDraw(currentEvent);
-        
+
         loadMyRecipient();
 
         showAlert("Draw Complete", "The event has been updated. Pairs Assigned!");
@@ -152,7 +152,7 @@ public class AdminController extends BaseController implements BackNavigable {
             alert.showAndWait();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logError("Failed to read event report file", e);
             showError("Error reading report file.");
         }
     }

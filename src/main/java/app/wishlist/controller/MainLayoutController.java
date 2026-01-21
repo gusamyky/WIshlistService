@@ -69,7 +69,8 @@ public class MainLayoutController extends BaseController {
             currentView = "/fxml/wishlist-view.fxml";
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load friend's wishlist view", e);
+            showError("Failed to load wishlist. Please try again.");
         }
     }
 
@@ -105,7 +106,8 @@ public class MainLayoutController extends BaseController {
             currentEvent = event;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load event details view", e);
+            showError("Failed to load event details. Please try again.");
         }
     }
 
@@ -159,7 +161,8 @@ public class MainLayoutController extends BaseController {
             currentView = fxmlPath;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to load view: " + fxmlPath, e);
+            showError("Failed to load view. Please try again.");
         }
     }
 }

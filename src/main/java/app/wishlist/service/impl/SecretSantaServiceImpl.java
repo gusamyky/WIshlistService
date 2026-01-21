@@ -7,6 +7,8 @@ import app.wishlist.service.interfaces.ISecretSantaService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class SecretSantaServiceImpl implements ISecretSantaService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SecretSantaServiceImpl.class);
     private static final SecretSantaServiceImpl INSTANCE = new SecretSantaServiceImpl();
     private static final String EVENTS_FILE = "events_data.json";
     private final Gson gson;
@@ -40,7 +43,6 @@ public class SecretSantaServiceImpl implements ISecretSantaService {
         events.add(event);
         saveEvents();
     }
-
 
     public List<SecretSantaEvent> getMyEvents(User user) {
         if (user == null)
@@ -103,13 +105,14 @@ public class SecretSantaServiceImpl implements ISecretSantaService {
         try (Writer writer = new FileWriter(EVENTS_FILE)) {
             gson.toJson(events, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to save Secret Santa events to file: {}", EVENTS_FILE, e);
         }
     }
 
     private void loadEvents() {
         File file = new File(EVENTS_FILE);
-        if (!file.exists()) return;
+        if (!file.exists())
+            return;
 
         try (Reader reader = new FileReader(EVENTS_FILE)) {
             Type type = new TypeToken<ArrayList<SecretSantaEvent>>() {
@@ -117,9 +120,10 @@ public class SecretSantaServiceImpl implements ISecretSantaService {
 
             List<SecretSantaEvent> loaded = gson.fromJson(reader, type);
 
-            if (loaded != null) this.events = loaded;
+            if (loaded != null)
+                this.events = loaded;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to load Secret Santa events from file: {}", EVENTS_FILE, e);
         }
     }
 

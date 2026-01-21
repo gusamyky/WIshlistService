@@ -90,7 +90,7 @@ public class FeedbackController extends BaseController {
             writer.write("\n------------------------------------------------\n\n");
             System.out.println("Appended feedback to: " + file.getAbsolutePath());
         } catch (IOException e) {
-            e.printStackTrace();
+            logError("Failed to save feedback report to file: " + file.getAbsolutePath(), e);
             showError("Failed to save report.");
         }
     }
